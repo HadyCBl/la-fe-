@@ -61,16 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       description: "Adoración que llega hasta el trono",
       verse: "Apocalipsis 4:8"
     },
-    {
-      id: 7,
-      type: "image",
-      src: "https://images.unsplash.com/photo-1418065460487-3656888ac049?w=800&h=600&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1418065460487-3656888ac049?w=400&h=300&fit=crop",
-      category: "fellowship",
-      title: "Luz de Comunión",
-      description: "Unidos en el amor de Cristo",
-      verse: "1 Juan 1:7"
-    },
+    
     {
       id: 8,
       type: "image",
@@ -131,16 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
       description: "Jóvenes con fe inquebrantable",
       verse: "Mateo 17:20"
     },
-    {
-      id: 14,
-      type: "image",
-      src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1200&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop",
-      category: "fellowship",
-      title: "Manada de Líderes",
-      description: "Entrenando la próxima generación",
-      verse: "2 Timoteo 2:2"
-    },
+    
     {
       id: 15,
       type: "image",
@@ -191,16 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
       description: "Descubriendo las riquezas de Cristo",
       verse: "Colosenses 2:3"
     },
-    {
-      id: 20,
-      type: "image",
-      src: "https://images.unsplash.com/photo-1418065460487-3656888ac049?w=800&h=800&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1418065460487-3656888ac049?w=400&h=400&fit=crop",
-      category: "worship",
-      title: "Jardín de Oración",
-      description: "Tiempo íntimo con el Padre",
-      verse: "Mateo 6:6"
-    },
+    
     {
       id: 21,
       type: "image",
