@@ -1,80 +1,4 @@
-// Auto-llenar campos
-                document.getElementById('autoFillBtn').addEventListener('click', async () => {
-                    await this.generateContent('both');
-                });
-                
-                // Refresh photos
-                document.getElementById('refreshPhotos').addEventListener('click', () => {
-                    this.loadPhotos();
-                });
-            }
-            
-            async generateContent(type) {
-                const category = document.getElementById('photoCategory').value;
-                
-                try {
-                    // Usar bible-verses.php directamente
-                    const response = await fetch(`bible-verses.php?action=${type}&category=${category}`);
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        if (type === 'title' && data.title) {
-                            document.getElementById('photoTitle').value = data.title;
-                            this.showMessage('Título generado automáticamente', 'success');
-                        } else if (type === 'verse' && data.verse) {
-                            document.getElementById('photoVerse').value = data.verse;
-                            this.showMessage('Versículo generado automáticamente', 'success');
-                        } else if (type === 'both') {
-                            if (data.title) document.getElementById('photoTitle').value = data.title;
-                            if (data.verse) document.getElementById('photoVerse').value = data.verse;
-                            this.showMessage('Título y versículo generados automáticamente', 'success');
-                        }
-                    } else {
-                        throw new Error(data.error || 'Error en la respuesta');
-                    }
-                } catch (error) {
-                    console.error('Error generating content:', error);
-                    // Fallback con contenido estático
-                    this.generateStaticContent(type, category);
-                }
-            }
-            
-            generateStaticContent(type, category) {
-                const staticContent = {
-                    worship: {
-                        titles: ['Corazones en Adoración', 'Alabanza que Trasciende', 'En Su Presencia'],
-                        verses: ['Salmos 95:1', 'Salmos 150:6', 'Juan 4:24']
-                    },
-                    fellowship: {
-                        titles: ['Unidos en Cristo', 'Hermanos en Fe', 'Comunión Verdadera'],
-                        verses: ['Hebreos 10:25', 'Proverbios 27:17', '1 Juan 1:7']
-                    },
-                    events: {
-                        titles: ['Momentos Especiales', 'Recuerdos de Fe', 'Experiencias Transformadoras'],
-                        verses: ['Deuteronomio 31:6', 'Josué 1:9', 'Isaías 40:31']
-                    },
-                    service: {
-                        titles: ['Manos que Sirven', 'Corazón de Siervo', 'Amor en Acción'],
-                        verses: ['Marcos 16:15', 'Mateo 28:19', '1 Pedro 4:10']
-                    }
-                };
-                
-                const content = staticContent[category] || staticContent.fellowship;
-                
-                if (type === 'title' || type === 'both') {
-                    const randomTitle = content.titles[Math.floor(Math.random() * content.titles.length)];
-                    document.getElementById('photoTitle').value = randomTitle;
-                }
-                
-                if (type === 'verse' || type === 'both') {
-                    const randomVerse = content.verses[Math.floor(Math.random() * content.verses.length)];
-                    document.getElementById('photoVerse').value = randomVerse;
-                }
-                
-                this.showMessage('Contenido generado (modo offline)', 'success');
-            }
-            
-            async checkAuthStatus() {<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -483,6 +407,81 @@
                         await this.generateContent('both');
                     }
                 });
+                
+                // Auto-llenar campos
+                document.getElementById('autoFillBtn').addEventListener('click', async () => {
+                    await this.generateContent('both');
+                });
+                
+                // Refresh photos
+                document.getElementById('refreshPhotos').addEventListener('click', () => {
+                    this.loadPhotos();
+                });
+            }
+            
+            async generateContent(type) {
+                const category = document.getElementById('photoCategory').value;
+                
+                try {
+                    // Usar bible-verses.php directamente
+                    const response = await fetch(`bible-verses.php?action=${type}&category=${category}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        if (type === 'title' && data.title) {
+                            document.getElementById('photoTitle').value = data.title;
+                            this.showMessage('Título generado automáticamente', 'success');
+                        } else if (type === 'verse' && data.verse) {
+                            document.getElementById('photoVerse').value = data.verse;
+                            this.showMessage('Versículo generado automáticamente', 'success');
+                        } else if (type === 'both') {
+                            if (data.title) document.getElementById('photoTitle').value = data.title;
+                            if (data.verse) document.getElementById('photoVerse').value = data.verse;
+                            this.showMessage('Título y versículo generados automáticamente', 'success');
+                        }
+                    } else {
+                        throw new Error(data.error || 'Error en la respuesta');
+                    }
+                } catch (error) {
+                    console.error('Error generating content:', error);
+                    // Fallback con contenido estático
+                    this.generateStaticContent(type, category);
+                }
+            }
+            
+            generateStaticContent(type, category) {
+                const staticContent = {
+                    worship: {
+                        titles: ['Corazones en Adoración', 'Alabanza que Trasciende', 'En Su Presencia'],
+                        verses: ['Salmos 95:1', 'Salmos 150:6', 'Juan 4:24']
+                    },
+                    fellowship: {
+                        titles: ['Unidos en Cristo', 'Hermanos en Fe', 'Comunión Verdadera'],
+                        verses: ['Hebreos 10:25', 'Proverbios 27:17', '1 Juan 1:7']
+                    },
+                    events: {
+                        titles: ['Momentos Especiales', 'Recuerdos de Fe', 'Experiencias Transformadoras'],
+                        verses: ['Deuteronomio 31:6', 'Josué 1:9', 'Isaías 40:31']
+                    },
+                    service: {
+                        titles: ['Manos que Sirven', 'Corazón de Siervo', 'Amor en Acción'],
+                        verses: ['Marcos 16:15', 'Mateo 28:19', '1 Pedro 4:10']
+                    }
+                };
+                
+                const content = staticContent[category] || staticContent.fellowship;
+                
+                if (type === 'title' || type === 'both') {
+                    const randomTitle = content.titles[Math.floor(Math.random() * content.titles.length)];
+                    document.getElementById('photoTitle').value = randomTitle;
+                }
+                
+                if (type === 'verse' || type === 'both') {
+                    const randomVerse = content.verses[Math.floor(Math.random() * content.verses.length)];
+                    document.getElementById('photoVerse').value = randomVerse;
+                }
+                
+                this.showMessage('Contenido generado (modo offline)', 'success');
             }
             
             async checkAuthStatus() {
