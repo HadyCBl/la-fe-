@@ -32,6 +32,9 @@ switch ($route) {
     case 'upload':
         handleUpload();
         break;
+    case 'bulk-upload':
+        handleBulkUpload();
+        break;
     case 'photos':
         handleGetPhotos();
         break;
@@ -91,6 +94,95 @@ function handleStatus() {
 // =============================================================================
 // FUNCIONES DE GESTIÓN DE FOTOS
 // =============================================================================
+
+function handleBulkUpload() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        sendError(405, 'Método no permitido');
+        return;
+    }
+    
+    if (!isAuthenticated()) {
+        sendError(401, 'Acceso no autorizado');
+        return;
+    }
+    
+    // Verificar que se enviaron archivos
+    if (!isset($_FILES['images']) || !is_array($_FILES['images']['name'])) {
+        sendError(400, 'No se encontraron archivos para subir');
+        return;
+    }
+    
+    $category = validateCategory($_POST['category'] ?? 'fellowship');
+    $baseDescription = sanitizeInput($_POST['description'] ?? 'Imagen del ministerio juvenil');
+    
+    $uploadedFiles = [];
+    $errors = [];
+    
+    // Procesar cada archivo
+    for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
+        $file = [
+            'name' => $_FILES['images']['name'][$i],
+            'type' => $_FILES['images']['type'][$i],
+            'tmp_name' => $_FILES['images']['tmp_name'][$i],
+            'error' => $_FILES['images']['error'][$i],
+            'size' => $_FILES['images']['size'][$i]
+        ];
+        
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $errors[] = "Error en archivo {$file['name']}";
+            continue;
+        }
+        
+        if (!isValidImage($file)) {
+            $errors[] = "Archivo {$file['name']} no es válido";
+            continue;
+        }
+        
+        // Generar nombre único y mover archivo
+        $filename = generateUniqueFilename($file['name']);
+        $uploadPath = UPLOAD_DIR . $filename;
+        
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            // Generar contenido automático para cada foto
+            $bibleData = getRandomBibleContent($category);
+            
+            $photoData = [
+                'id' => generatePhotoId(),
+                'filename' => $filename,
+                'original_name' => sanitizeInput($file['name']),
+                'title' => $bibleData['title'],
+                'description' => $baseDescription,
+                'category' => $category,
+                'verse' => $bibleData['verse'],
+                'verse_text' => $bibleData['text'],
+                'upload_date' => date('Y-m-d H:i:s'),
+                'uploaded_by' => $_SESSION['admin_username'],
+                'file_size' => $file['size'],
+                'mime_type' => $file['type'],
+                'src' => '/' . UPLOAD_DIR . $filename,
+                'thumbnail' => '/' . UPLOAD_DIR . $filename
+            ];
+            
+            if (savePhotoRecord($photoData)) {
+                $uploadedFiles[] = $photoData;
+            } else {
+                unlink($uploadPath);
+                $errors[] = "Error guardando información de {$file['name']}";
+            }
+            
+        } else {
+            $errors[] = "Error al subir {$file['name']}";
+        }
+    }
+    
+    sendSuccess([
+        'message' => 'Carga masiva completada',
+        'uploaded' => count($uploadedFiles),
+        'errors' => count($errors),
+        'files' => $uploadedFiles,
+        'error_details' => $errors
+    ]);
+}
 
 function handleUpload() {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -394,10 +486,3 @@ function logError($message) {
 }
 ?>
 
-// Log de errores para debugging (solo en desarrollo)
-function logError($message) {
-    if (defined('DEBUG') && DEBUG) {
-        error_log("[Gallery API] " . $message);
-    }
-}
-?>
