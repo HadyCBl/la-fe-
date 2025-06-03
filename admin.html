@@ -1,4 +1,80 @@
-<!DOCTYPE html>
+// Auto-llenar campos
+                document.getElementById('autoFillBtn').addEventListener('click', async () => {
+                    await this.generateContent('both');
+                });
+                
+                // Refresh photos
+                document.getElementById('refreshPhotos').addEventListener('click', () => {
+                    this.loadPhotos();
+                });
+            }
+            
+            async generateContent(type) {
+                const category = document.getElementById('photoCategory').value;
+                
+                try {
+                    // Usar bible-verses.php directamente
+                    const response = await fetch(`bible-verses.php?action=${type}&category=${category}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        if (type === 'title' && data.title) {
+                            document.getElementById('photoTitle').value = data.title;
+                            this.showMessage('Título generado automáticamente', 'success');
+                        } else if (type === 'verse' && data.verse) {
+                            document.getElementById('photoVerse').value = data.verse;
+                            this.showMessage('Versículo generado automáticamente', 'success');
+                        } else if (type === 'both') {
+                            if (data.title) document.getElementById('photoTitle').value = data.title;
+                            if (data.verse) document.getElementById('photoVerse').value = data.verse;
+                            this.showMessage('Título y versículo generados automáticamente', 'success');
+                        }
+                    } else {
+                        throw new Error(data.error || 'Error en la respuesta');
+                    }
+                } catch (error) {
+                    console.error('Error generating content:', error);
+                    // Fallback con contenido estático
+                    this.generateStaticContent(type, category);
+                }
+            }
+            
+            generateStaticContent(type, category) {
+                const staticContent = {
+                    worship: {
+                        titles: ['Corazones en Adoración', 'Alabanza que Trasciende', 'En Su Presencia'],
+                        verses: ['Salmos 95:1', 'Salmos 150:6', 'Juan 4:24']
+                    },
+                    fellowship: {
+                        titles: ['Unidos en Cristo', 'Hermanos en Fe', 'Comunión Verdadera'],
+                        verses: ['Hebreos 10:25', 'Proverbios 27:17', '1 Juan 1:7']
+                    },
+                    events: {
+                        titles: ['Momentos Especiales', 'Recuerdos de Fe', 'Experiencias Transformadoras'],
+                        verses: ['Deuteronomio 31:6', 'Josué 1:9', 'Isaías 40:31']
+                    },
+                    service: {
+                        titles: ['Manos que Sirven', 'Corazón de Siervo', 'Amor en Acción'],
+                        verses: ['Marcos 16:15', 'Mateo 28:19', '1 Pedro 4:10']
+                    }
+                };
+                
+                const content = staticContent[category] || staticContent.fellowship;
+                
+                if (type === 'title' || type === 'both') {
+                    const randomTitle = content.titles[Math.floor(Math.random() * content.titles.length)];
+                    document.getElementById('photoTitle').value = randomTitle;
+                }
+                
+                if (type === 'verse' || type === 'both') {
+                    const randomVerse = content.verses[Math.floor(Math.random() * content.verses.length)];
+                    document.getElementById('photoVerse').value = randomVerse;
+                }
+                
+                this.showMessage('Contenido generado (modo offline)', 'success');
+            }
+            
+            async checkAuthStatus() {<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -169,14 +245,26 @@
                 <form id="uploadForm" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Título de la Foto</label>
-                            <input 
-                                type="text" 
-                                id="photoTitle" 
-                                required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Ej: Alabanza en las Alturas"
-                            >
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Título de la Foto
+                                <span class="text-xs text-gray-500">(opcional - se generará automáticamente si está vacío)</span>
+                            </label>
+                            <div class="flex space-x-2">
+                                <input 
+                                    type="text" 
+                                    id="photoTitle" 
+                                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="Ej: Alabanza en las Alturas (opcional)"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="generateTitle"
+                                    class="px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors whitespace-nowrap"
+                                    title="Generar título automático"
+                                >
+                                    <i class="fas fa-lightbulb"></i>
+                                </button>
+                            </div>
                         </div>
                         
                         <div>
@@ -205,13 +293,26 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Versículo Bíblico</label>
-                        <input 
-                            type="text" 
-                            id="photoVerse" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Ej: Salmos 150:6"
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Versículo Bíblico
+                            <span class="text-xs text-gray-500">(opcional - se generará automáticamente si está vacío)</span>
+                        </label>
+                        <div class="flex space-x-2">
+                            <input 
+                                type="text" 
+                                id="photoVerse" 
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Ej: Salmos 150:6 (opcional)"
+                            >
+                            <button 
+                                type="button" 
+                                id="generateVerse"
+                                class="px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors whitespace-nowrap"
+                                title="Generar versículo automático"
+                            >
+                                <i class="fas fa-magic"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Drag & Drop Area -->
@@ -248,11 +349,21 @@
                         type="submit" 
                         id="uploadBtn"
                         class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-colors duration-200 disabled:opacity-50"
-                        disabled
                     >
                         <i class="fas fa-upload mr-2"></i>
                         Subir Foto
                     </button>
+                    
+                    <div class="text-center">
+                        <button 
+                            type="button" 
+                            id="autoFillBtn"
+                            class="text-sm text-purple-600 hover:text-purple-700 underline"
+                        >
+                            <i class="fas fa-magic mr-1"></i>
+                            Llenar automáticamente título y versículo
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -352,9 +463,25 @@
                     this.clearFileSelection();
                 });
                 
-                // Refresh photos
-                document.getElementById('refreshPhotos').addEventListener('click', () => {
-                    this.loadPhotos();
+                // Generar título automático
+                document.getElementById('generateTitle').addEventListener('click', async () => {
+                    await this.generateContent('title');
+                });
+                
+                // Generar versículo automático
+                document.getElementById('generateVerse').addEventListener('click', async () => {
+                    await this.generateContent('verse');
+                });
+                
+                // Generar ambos automáticamente
+                document.getElementById('photoCategory').addEventListener('change', async () => {
+                    const titleInput = document.getElementById('photoTitle');
+                    const verseInput = document.getElementById('photoVerse');
+                    
+                    // Solo generar si ambos campos están vacíos
+                    if (!titleInput.value.trim() && !verseInput.value.trim()) {
+                        await this.generateContent('both');
+                    }
                 });
             }
             
@@ -442,7 +569,7 @@
                 document.getElementById('imageFile').value = '';
                 document.getElementById('uploadPlaceholder').classList.remove('hidden');
                 document.getElementById('uploadPreview').classList.add('hidden');
-                document.getElementById('uploadBtn').disabled = true;
+                document.getElementById('uploadBtn').disabled = false; // Cambio aquí - siempre permitir subir
             }
             
             async handleUpload() {

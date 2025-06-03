@@ -1,284 +1,161 @@
 <?php
-// config.php
-session_start();
+// config.php - Configuración central del sistema
 
-// Configuración
+// Configuración de la aplicación
+define('APP_NAME', 'Galería Juvenil Cristiana');
+define('APP_VERSION', '1.0.0');
+define('DEBUG', false); // Cambiar a true para development
+
+// Configuración de autenticación
 define('ADMIN_USERNAME', 'admin');
 define('ADMIN_PASSWORD', 'admin123@');
+define('SESSION_TIMEOUT', 86400); // 24 horas en segundos
+
+// Configuración de archivos
 define('UPLOAD_DIR', 'uploads/');
-define('MAX_FILE_SIZE', 50 * 1024 * 1024); // 50MB para fotos de alta calidad
+define('PHOTOS_JSON', 'photos.json');
+define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10MB
+define('ALLOWED_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 
-// Crear directorio de uploads si no existe
-if (!file_exists(UPLOAD_DIR)) {
-    mkdir(UPLOAD_DIR, 0777, true);
+// Configuración de la galería
+define('DEFAULT_CATEGORY', 'fellowship');
+define('AUTO_GENERATE_CONTENT', true); // Si generar automáticamente títulos y versículos
+define('PHOTOS_PER_PAGE', 50); // Para futuras implementaciones de paginación
+
+// Categorías disponibles
+define('CATEGORIES', [
+    'worship' => 'Alabanza',
+    'fellowship' => 'Comunión', 
+    'events' => 'Eventos',
+    'service' => 'Servicio'
+]);
+
+// Configuración de la API de versículos
+define('BIBLE_API_ENABLED', true);
+define('BIBLE_API_TIMEOUT', 5); // segundos
+
+// Configuración de seguridad
+define('ENABLE_RATE_LIMITING', false); // Para implementaciones futuras
+define('MAX_UPLOADS_PER_HOUR', 20);
+
+// URLs y paths
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$baseUrl = $protocol . $host . dirname($_SERVER['REQUEST_URI'] ?? '');
+
+define('BASE_URL', rtrim($baseUrl, '/'));
+define('UPLOAD_URL', BASE_URL . '/' . UPLOAD_DIR);
+
+// Función para obtener configuración
+function getConfig($key, $default = null) {
+    return defined($key) ? constant($key) : $default;
 }
 
-// Función para verificar autenticación
-function isAuthenticated() {
-    return isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+// Función para verificar si estamos en modo debug
+function isDebug() {
+    return getConfig('DEBUG', false);
 }
 
-// Función para verificar credenciales
-function validateCredentials($username, $password) {
-    return $username === ADMIN_USERNAME && $password === ADMIN_PASSWORD;
-}
-
-// Función para generar nombre único de archivo
-function generateUniqueFilename($originalName) {
-    $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-    $timestamp = time();
-    $random = mt_rand(1000, 9999);
-    return "img_{$timestamp}_{$random}.{$extension}";
-}
-
-// Función para validar imagen
-function isValidImage($file) {
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    $maxSize = MAX_FILE_SIZE;
-    
-    if (!in_array($file['type'], $allowedTypes)) {
-        return false;
+// Función para log de errores
+function logMessage($message, $level = 'INFO') {
+    if (isDebug()) {
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = "[$timestamp] [$level] $message" . PHP_EOL;
+        error_log($logEntry, 3, 'app.log');
     }
+}
+
+// Configuración de zona horaria
+date_default_timezone_set('America/Guatemala');
+
+// Inicializar directorios necesarios
+function initializeDirectories() {
+    $dirs = [UPLOAD_DIR];
     
-    if ($file['size'] > $maxSize) {
-        return false;
+    foreach ($dirs as $dir) {
+        if (!file_exists($dir)) {
+            if (!mkdir($dir, 0755, true)) {
+                logMessage("Failed to create directory: $dir", 'ERROR');
+                return false;
+            }
+            logMessage("Created directory: $dir", 'INFO');
+        }
     }
     
     return true;
 }
 
-// Headers para JSON
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
-// Manejar OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-// Ruteo básico
-$request = $_SERVER['REQUEST_URI'];
-$path = parse_url($request, PHP_URL_PATH);
-
-switch ($path) {
-    case '/api/login':
-        handleLogin();
-        break;
-    case '/api/logout':
-        handleLogout();
-        break;
-    case '/api/upload':
-        handleUpload();
-        break;
-    case '/api/photos':
-        handleGetPhotos();
-        break;
-    case '/api/delete':
-        handleDeletePhoto();
-        break;
-    case '/api/status':
-        handleStatus();
-        break;
-    default:
-        http_response_code(404);
-        echo json_encode(['error' => 'Endpoint no encontrado']);
-        break;
-}
-
-function handleLogin() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido']);
-        return;
-    }
+// Configuración de headers de seguridad
+function setSecurityHeaders() {
+    // Prevenir XSS
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-XSS-Protection: 1; mode=block');
     
-    $input = json_decode(file_get_contents('php://input'), true);
-    
-    if (!isset($input['username']) || !isset($input['password'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Usuario y contraseña requeridos']);
-        return;
-    }
-    
-    if (validateCredentials($input['username'], $input['password'])) {
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_username'] = $input['username'];
-        echo json_encode([
-            'success' => true,
-            'message' => 'Autenticación exitosa',
-            'user' => $input['username']
-        ]);
-    } else {
-        http_response_code(401);
-        echo json_encode(['error' => 'Credenciales inválidas']);
+    // CORS para desarrollo local
+    if (isDebug()) {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
     }
 }
 
-function handleLogout() {
-    session_destroy();
-    echo json_encode(['success' => true, 'message' => 'Sesión cerrada']);
-}
-
-function handleStatus() {
-    echo json_encode([
-        'authenticated' => isAuthenticated(),
-        'user' => isAuthenticated() ? $_SESSION['admin_username'] : null
-    ]);
-}
-
-function handleUpload() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido']);
-        return;
-    }
+// Función para verificar requisitos del sistema
+function checkSystemRequirements() {
+    $requirements = [
+        'PHP Version >= 7.4' => version_compare(PHP_VERSION, '7.4.0', '>='),
+        'JSON Extension' => extension_loaded('json'),
+        'GD Extension' => extension_loaded('gd'),
+        'Upload Directory Writable' => is_writable(dirname(__FILE__)),
+        'Sessions Enabled' => function_exists('session_start')
+    ];
     
-    if (!isAuthenticated()) {
-        http_response_code(401);
-        echo json_encode(['error' => 'No autenticado']);
-        return;
-    }
-    
-    if (!isset($_FILES['image'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'No se encontró archivo de imagen']);
-        return;
-    }
-    
-    $file = $_FILES['image'];
-    
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Error en la subida del archivo']);
-        return;
-    }
-    
-    if (!isValidImage($file)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Archivo no válido. Solo se permiten imágenes (JPEG, PNG, GIF, WebP) menores a 10MB']);
-        return;
-    }
-    
-    // Generar nombre único
-    $filename = generateUniqueFilename($file['name']);
-    $uploadPath = UPLOAD_DIR . $filename;
-    
-    if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-        // Obtener datos adicionales del POST
-        $title = $_POST['title'] ?? 'Imagen sin título';
-        $description = $_POST['description'] ?? 'Sin descripción';
-        $category = $_POST['category'] ?? 'fellowship';
-        $verse = $_POST['verse'] ?? 'Salmos 1:1';
-        
-        // Guardar información en archivo JSON
-        $photoData = [
-            'id' => time(),
-            'filename' => $filename,
-            'original_name' => $file['name'],
-            'title' => $title,
-            'description' => $description,
-            'category' => $category,
-            'verse' => $verse,
-            'upload_date' => date('Y-m-d H:i:s'),
-            'src' => '/uploads/' . $filename,
-            'thumbnail' => '/uploads/' . $filename // En un futuro podrías generar thumbnails
-        ];
-        
-        // Leer fotos existentes
-        $photosFile = 'photos.json';
-        $photos = [];
-        if (file_exists($photosFile)) {
-            $photos = json_decode(file_get_contents($photosFile), true) ?: [];
+    $allMet = true;
+    foreach ($requirements as $requirement => $met) {
+        if (!$met) {
+            logMessage("System requirement not met: $requirement", 'ERROR');
+            $allMet = false;
         }
-        
-        // Agregar nueva foto
-        $photos[] = $photoData;
-        
-        // Guardar archivo actualizado
-        file_put_contents($photosFile, json_encode($photos, JSON_PRETTY_PRINT));
-        
-        echo json_encode([
-            'success' => true,
-            'message' => 'Imagen subida exitosamente',
-            'photo' => $photoData
-        ]);
-    } else {
-        http_response_code(500);
-        echo json_encode(['error' => 'Error al guardar el archivo']);
     }
+    
+    return $allMet;
 }
 
-function handleGetPhotos() {
-    $photosFile = 'photos.json';
-    
-    if (file_exists($photosFile)) {
-        $photos = json_decode(file_get_contents($photosFile), true) ?: [];
-        echo json_encode(['photos' => $photos]);
-    } else {
-        echo json_encode(['photos' => []]);
-    }
+// Función para obtener información del sistema
+function getSystemInfo() {
+    return [
+        'app_name' => APP_NAME,
+        'app_version' => APP_VERSION,
+        'php_version' => PHP_VERSION,
+        'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+        'upload_max_filesize' => ini_get('upload_max_filesize'),
+        'post_max_size' => ini_get('post_max_size'),
+        'max_execution_time' => ini_get('max_execution_time'),
+        'memory_limit' => ini_get('memory_limit'),
+        'debug_mode' => isDebug(),
+        'base_url' => BASE_URL
+    ];
 }
 
-function handleDeletePhoto() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido']);
-        return;
-    }
-    
-    if (!isAuthenticated()) {
-        http_response_code(401);
-        echo json_encode(['error' => 'No autenticado']);
-        return;
-    }
-    
-    $input = json_decode(file_get_contents('php://input'), true);
-    
-    if (!isset($input['id'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'ID de foto requerido']);
-        return;
-    }
-    
-    $photoId = $input['id'];
-    $photosFile = 'photos.json';
-    
-    if (file_exists($photosFile)) {
-        $photos = json_decode(file_get_contents($photosFile), true) ?: [];
-        
-        // Buscar y eliminar foto
-        $photoToDelete = null;
-        $photos = array_filter($photos, function($photo) use ($photoId, &$photoToDelete) {
-            if ($photo['id'] == $photoId) {
-                $photoToDelete = $photo;
-                return false;
-            }
-            return true;
-        });
-        
-        if ($photoToDelete) {
-            // Eliminar archivo físico
-            $filePath = UPLOAD_DIR . $photoToDelete['filename'];
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-            
-            // Guardar archivo actualizado
-            file_put_contents($photosFile, json_encode(array_values($photos), JSON_PRETTY_PRINT));
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Foto eliminada exitosamente'
-            ]);
+// Inicialización automática
+if (!defined('SKIP_AUTO_INIT')) {
+    // Verificar requisitos del sistema
+    if (!checkSystemRequirements()) {
+        if (isDebug()) {
+            die('System requirements not met. Check logs for details.');
         } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Foto no encontrada']);
+            http_response_code(500);
+            die('System configuration error.');
         }
-    } else {
-        http_response_code(404);
-        echo json_encode(['error' => 'No hay fotos para eliminar']);
     }
+    
+    // Inicializar directorios
+    initializeDirectories();
+    
+    // Configurar headers de seguridad
+    setSecurityHeaders();
+    
+    logMessage('System initialized successfully');
 }
 ?>

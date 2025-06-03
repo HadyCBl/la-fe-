@@ -1,30 +1,19 @@
 <?php
 // api.php - API principal para el sistema de galería
-session_start();
+require_once 'config.php';
 
-// Configuración
-define('ADMIN_USERNAME', 'admin');
-define('ADMIN_PASSWORD', 'admin123@');
-define('UPLOAD_DIR', 'uploads/');
-define('PHOTOS_JSON', 'photos.json');
-define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10MB
-define('DEBUG', false); // Cambia a true para habilitar el log de errores
+session_start();
 
 // Headers CORS y JSON
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Manejar preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Crear directorio de uploads si no existe
-if (!file_exists(UPLOAD_DIR)) {
-    mkdir(UPLOAD_DIR, 0755, true);
-}
+// Crear directorio de uploads si no existe (ya manejado en config.php)
+logMessage("API initialized for route: $route");
 
 // Obtener la ruta desde el parámetro GET
 $route = isset($_GET['route']) ? $_GET['route'] : '';
@@ -137,15 +126,21 @@ function handleUpload() {
         return;
     }
     
-    // Crear registro de la foto
+    // Crear registro de la foto con datos automáticos si están vacíos
+    $bibleData = null;
+    if (empty($_POST['title']) || empty($_POST['verse'])) {
+        $bibleData = getRandomBibleContent($_POST['category'] ?? 'fellowship');
+    }
+    
     $photoData = [
         'id' => generatePhotoId(),
         'filename' => $filename,
         'original_name' => sanitizeInput($file['name']),
-        'title' => sanitizeInput($_POST['title'] ?? 'Imagen sin título'),
-        'description' => sanitizeInput($_POST['description'] ?? 'Sin descripción'),
+        'title' => sanitizeInput($_POST['title']) ?: ($bibleData['title'] ?? 'Momento Especial'),
+        'description' => sanitizeInput($_POST['description'] ?? 'Una bendición capturada en imagen'),
         'category' => validateCategory($_POST['category'] ?? 'fellowship'),
-        'verse' => sanitizeInput($_POST['verse'] ?? 'Salmos 1:1'),
+        'verse' => sanitizeInput($_POST['verse']) ?: ($bibleData['verse'] ?? 'Salmos 1:1'),
+        'verse_text' => $bibleData['text'] ?? null,
         'upload_date' => date('Y-m-d H:i:s'),
         'uploaded_by' => $_SESSION['admin_username'],
         'file_size' => $file['size'],
@@ -250,6 +245,50 @@ function handleDeletePhoto() {
 // FUNCIONES AUXILIARES
 // =============================================================================
 
+function getRandomBibleContent($category) {
+    // Función interna para obtener contenido bíblico aleatorio
+    $bibleVerses = [
+        'worship' => [
+            ['verse' => 'Salmos 95:1', 'title' => 'Corazones en Adoración'],
+            ['verse' => 'Salmos 150:6', 'title' => 'Alabanza que Trasciende'],
+            ['verse' => 'Juan 4:24', 'title' => 'En Su Presencia'],
+            ['verse' => 'Salmos 100:2', 'title' => 'Voces que Alaban']
+        ],
+        'fellowship' => [
+            ['verse' => 'Hebreos 10:25', 'title' => 'Unidos en Cristo'],
+            ['verse' => 'Proverbios 27:17', 'title' => 'Hermanos en Fe'],
+            ['verse' => '1 Juan 1:7', 'title' => 'Comunión Verdadera'],
+            ['verse' => 'Gálatas 6:2', 'title' => 'Lazos Eternos']
+        ],
+        'events' => [
+            ['verse' => 'Deuteronomio 31:6', 'title' => 'Momentos Especiales'],
+            ['verse' => 'Josué 1:9', 'title' => 'Recuerdos de Fe'],
+            ['verse' => 'Isaías 40:31', 'title' => 'Experiencias Transformadoras'],
+            ['verse' => 'Filipenses 4:13', 'title' => 'Encuentros Divinos']
+        ],
+        'service' => [
+            ['verse' => 'Marcos 16:15', 'title' => 'Manos que Sirven'],
+            ['verse' => 'Mateo 28:19', 'title' => 'Corazón de Siervo'],
+            ['verse' => '1 Pedro 4:10', 'title' => 'Amor en Acción'],
+            ['verse' => 'Gálatas 5:13', 'title' => 'Sirviendo con Gozo']
+        ]
+    ];
+    
+    // Si la categoría no existe, usar 'fellowship'
+    if (!isset($bibleVerses[$category])) {
+        $category = 'fellowship';
+    }
+    
+    $options = $bibleVerses[$category];
+    $selected = $options[array_rand($options)];
+    
+    return [
+        'title' => $selected['title'],
+        'verse' => $selected['verse'],
+        'text' => '' // Texto completo se puede agregar después si es necesario
+    ];
+}
+
 function isAuthenticated() {
     return isset($_SESSION['admin_logged_in']) && 
            $_SESSION['admin_logged_in'] === true &&
@@ -346,6 +385,14 @@ function sendError($code, $message) {
     ]);
     exit;
 }
+
+// Log de errores para debugging (solo en desarrollo)
+function logError($message) {
+    if (defined('DEBUG') && DEBUG) {
+        error_log("[Gallery API] " . $message);
+    }
+}
+?>
 
 // Log de errores para debugging (solo en desarrollo)
 function logError($message) {

@@ -3,6 +3,9 @@ RewriteEngine On
 # Redirigir todas las rutas API a api.php
 RewriteRule ^api/(.*)$ api.php?route=$1 [QSA,L]
 
+# Permitir acceso directo a bible-verses.php
+RewriteRule ^bible-verses\.php$ bible-verses.php [L]
+
 # Permitir acceso a archivos estáticos
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
