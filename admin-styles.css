@@ -1,0 +1,368 @@
+
+/* Efectos de cristal */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Estados de drag & drop */
+.drag-over {
+    border-color: #3B82F6;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.upload-area {
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #3B82F6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Spinner de carga */
+.spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Utilidades de texto */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Scrollbar personalizado para log de subida */
+#uploadLog::-webkit-scrollbar {
+    width: 4px;
+}
+
+#uploadLog::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+#uploadLog::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2px;
+}
+
+#uploadLog::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Efectos hover mejorados */
+.glass-effect:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+/* Estilos mejorados para drag and drop */
+.upload-area.drag-over {
+    transform: scale(1.02);
+    border-color: #3B82F6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+}
+
+/* Animación de barra de progreso */
+#progressBar {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Estado de drag activo para toda la página */
+.drag-active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 51, 234, 0.05));
+}
+
+.drag-active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(59, 130, 246, 0.1);
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Animaciones suaves para elementos interactivos */
+button, input, select, textarea {
+    transition: all 0.2s ease;
+}
+
+/* Animaciones de entrada */
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-in {
+    animation: slideInFromRight 0.3s ease-out;
+}
+
+/* Animación de pulso para elementos de carga */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Efectos de botones */
+button:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 768px) {
+    .glass-effect:hover {
+        transform: none;
+    }
+    
+    .upload-area.drag-over {
+        transform: scale(1.01);
+    }
+    
+    /* Ajustes para pantallas táctiles */
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Estados de loading para botones */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Efectos de transición para las tarjetas de fotos */
+.photo-card {
+    transition: all 0.3s ease;
+}
+
+.photo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para el preview de archivos en bulk */
+.file-preview {
+    transition: all 0.2s ease;
+}
+
+.file-preview:hover {
+    transform: scale(1.05);
+}
+
+/* Indicadores de estado */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-online {
+    background-color: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.status-offline {
+    background-color: #F59E0B;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+.status-error {
+    background-color: #EF4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+/* Animaciones de entrada escalonada */
+.staggered-animation {
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mejoras para tooltips */
+[title] {
+    position: relative;
+}
+
+/* Estilos para mensajes de notificación */
+.notification {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+/* Efecto de brillo para elementos importantes */
+.glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Indicador de carga para imágenes */
+.image-loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Mejoras para formularios */
+input:focus, textarea:focus, select:focus {
+    ring: 2px;
+    ring-color: rgba(59, 130, 246, 0.5);
+    border-color: #3B82F6;
+}
+
+/* Estilos para elementos disabled */
+.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Efectos de zoom para imágenes */
+.zoom-hover {
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.zoom-hover:hover img {
+    transform: scale(1.1);
+}
+
+/* Estilos para tags y badges */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.tag-blue {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #1E40AF;
+}
+
+.tag-green {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #047857;
+}
+
+.tag-yellow {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #92400E;
+}
+
+.tag-purple {
+    background-color: rgba(147, 51, 234, 0.1);
+    color: #6B21A8;
+}
+
+/* Efectos de overlay */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay:hover {
+    opacity: 1;
+}
+
+/* Responsive utilities adicionales */
+@media (max-width: 640px) {
+    .container-mobile {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .grid-mobile {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
