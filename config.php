@@ -1,10 +1,15 @@
 <?php
 // config.php - Configuración central del sistema
 
+// Configuración de errores para desarrollo
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Configuración de la aplicación
 define('APP_NAME', 'Galería Juvenil Cristiana');
 define('APP_VERSION', '1.0.0');
-define('DEBUG', false); // Cambiar a true para development
+define('DEBUG', true); // Cambiar a false para producción
 
 // Configuración de autenticación
 define('ADMIN_USERNAME', 'admin');
@@ -15,13 +20,11 @@ define('SESSION_TIMEOUT', 86400); // 24 horas en segundos
 define('UPLOAD_DIR', 'uploads/');
 define('PHOTOS_JSON', 'photos.json');
 define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10MB
-define('ALLOWED_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
-define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 
 // Configuración de la galería
 define('DEFAULT_CATEGORY', 'fellowship');
-define('AUTO_GENERATE_CONTENT', true); // Si generar automáticamente títulos y versículos
-define('PHOTOS_PER_PAGE', 50); // Para futuras implementaciones de paginación
+define('AUTO_GENERATE_CONTENT', true);
+define('PHOTOS_PER_PAGE', 50);
 
 // Categorías disponibles
 define('CATEGORIES', [
@@ -33,19 +36,10 @@ define('CATEGORIES', [
 
 // Configuración de la API de versículos
 define('BIBLE_API_ENABLED', true);
-define('BIBLE_API_TIMEOUT', 5); // segundos
+define('BIBLE_API_TIMEOUT', 5);
 
-// Configuración de seguridad
-define('ENABLE_RATE_LIMITING', false); // Para implementaciones futuras
-define('MAX_UPLOADS_PER_HOUR', 20);
-
-// URLs y paths
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$baseUrl = $protocol . $host . dirname($_SERVER['REQUEST_URI'] ?? '');
-
-define('BASE_URL', rtrim($baseUrl, '/'));
-define('UPLOAD_URL', BASE_URL . '/' . UPLOAD_DIR);
+// Configuración de zona horaria
+date_default_timezone_set('America/Guatemala');
 
 // Función para obtener configuración
 function getConfig($key, $default = null) {
@@ -65,9 +59,6 @@ function logMessage($message, $level = 'INFO') {
         error_log($logEntry, 3, 'app.log');
     }
 }
-
-// Configuración de zona horaria
-date_default_timezone_set('America/Guatemala');
 
 // Inicializar directorios necesarios
 function initializeDirectories() {
@@ -98,6 +89,7 @@ function setSecurityHeaders() {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
         header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Access-Control-Allow-Credentials: true');
     }
 }
 
@@ -122,22 +114,6 @@ function checkSystemRequirements() {
     return $allMet;
 }
 
-// Función para obtener información del sistema
-function getSystemInfo() {
-    return [
-        'app_name' => APP_NAME,
-        'app_version' => APP_VERSION,
-        'php_version' => PHP_VERSION,
-        'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
-        'upload_max_filesize' => ini_get('upload_max_filesize'),
-        'post_max_size' => ini_get('post_max_size'),
-        'max_execution_time' => ini_get('max_execution_time'),
-        'memory_limit' => ini_get('memory_limit'),
-        'debug_mode' => isDebug(),
-        'base_url' => BASE_URL
-    ];
-}
-
 // Inicialización automática
 if (!defined('SKIP_AUTO_INIT')) {
     // Verificar requisitos del sistema
@@ -151,11 +127,30 @@ if (!defined('SKIP_AUTO_INIT')) {
     }
     
     // Inicializar directorios
-    initializeDirectories();
+    if (!initializeDirectories()) {
+        if (isDebug()) {
+            die('Failed to initialize directories. Check permissions.');
+        } else {
+            http_response_code(500);
+            die('System initialization error.');
+        }
+    }
     
     // Configurar headers de seguridad
     setSecurityHeaders();
     
     logMessage('System initialized successfully');
 }
+
+// Función para inicializar el archivo de fotos si no existe
+function initializePhotosFile() {
+    if (!file_exists(PHOTOS_JSON)) {
+        $initialData = [];
+        file_put_contents(PHOTOS_JSON, json_encode($initialData, JSON_PRETTY_PRINT));
+        logMessage('Photos JSON file created');
+    }
+}
+
+// Inicializar archivo de fotos
+initializePhotosFile();
 ?>

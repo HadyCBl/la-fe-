@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retiro Cobán 2025 - Ubicación</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Header minimalista */
+    .glass-effect {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-link.active {
+      color: #fff;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 1px;
+      bottom: -4px;
+      left: 50%;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link.active::after,
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 18px;
+      height: 1px;
+      background-color: #fff;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(-45deg) translate(-4px, 4px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(45deg) translate(-4px, -4px);
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: 320px;
+      max-width: 80vw;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 50;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-item {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-item a {
+      color: #d1d5db;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-nav-item a:hover {
+      color: #fff;
+    }
+
+    .mobile-menu.active .mobile-nav-item {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .mobile-menu.active .mobile-nav-item:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(4) {
+      transition-delay: 0.4s;
+    }
+
+    /* Location card styles */
+    .location-card {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .location-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .location-card:hover::before {
+      opacity: 1;
+    }
+
+    .location-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .map-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .map-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      filter: brightness(0.8) contrast(1.2);
+    }
+
+    .location-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .info-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .info-item i {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #60a5fa;
+    }
+
+    .info-item h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .info-item p {
+      color: #d1d5db;
+      line-height: 1.6;
+    }
+
+    .directions-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(96, 165, 250, 0.3);
+    }
+
+    .directions-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(96, 165, 250, 0.4);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    /* Efectos de entrada */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .fade-in-up:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    .fade-in-up:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .fade-in-up:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .location-card {
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .map-container {
+        height: 300px;
+      }
+
+      .location-info {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .info-item {
+        padding: 1rem;
+      }
+    }
+
+    /* Scroll suave */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Utilidades */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 min-h-screen">
+  <!-- Header minimalista con efecto cristal -->
+  <header class="fixed top-0 left-0 right-0 glass-effect z-50 border-b border-white/20">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="inicio.html" class="flex items-center space-x-3">
+        <img src="src/img/solologo.png" alt="Logo" class="h-10 w-auto object-contain">
+      </a>
+      
+      <!-- Navegación desktop -->
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Cuenta Regresiva</a>
+        <a href="ubicacion.html" class="nav-link active text-white-300 hover:text-white py-2 transition-colors">Ubicación</a>
+        <a href="recomendaciones.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Recomendaciones</a>
+      </nav>
+      
+      <!-- Botón menú móvil -->
+      <button class="md:hidden text-gray-300" id="menu-toggle">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Overlay del menú móvil -->
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+  
+  <!-- Menú móvil -->
+  <nav id="mobile-menu" class="mobile-menu">
+    <div class="pt-20 px-6">
+      <div class="space-y-4">
+        <div class="mobile-nav-item">
+          <a href="index.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-clock text-lg w-6"></i>
+            <span class="text-lg font-medium">Cuenta Regresiva</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="ubicacion.html" class="flex items-center space-x-3 text-blue-400 py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-map-marker-alt text-lg w-6"></i>
+            <span class="text-lg font-medium">Ubicación</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="recomendaciones.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-lightbulb text-lg w-6"></i>
+            <span class="text-lg font-medium">Recomendaciones</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sección Principal de Ubicación -->
+  <main class="pt-24 pb-16 min-h-screen relative overflow-hidden">
+    <!-- Fondo animado -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-black to-slate-800"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+      <!-- Título minimalista -->
+      <div class="text-center mb-16 fade-in-up">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-thin text-white mb-8 tracking-wider">
+          UBICACIÓN
+          <span class="block text-3xl md:text-4xl lg:text-5xl font-light text-gray-400 mt-2">Retiro Cobán 2025</span>
+        </h1>
+        <div class="w-24 h-px bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-8"></div>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          Nos encontraremos en un lugar especial donde la presencia de Dios se manifestará
+        </p>
+      </div>
+
+      <!-- Tarjeta de Ubicación -->
+      <div class="location-card fade-in-up">
+        <!-- Mapa -->
+     <!-- Mapa -->
+<div class="map-container">
+  <iframe 
+    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3847.080844242335!2d-90.44061482487857!3d15.37210738521079!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTXCsDIyJzE5LjYiTiA5MMKwMjYnMTYuOSJX!5e0!3m2!1ses-419!2sgt!4v1751655461137!5m2!1ses-419!2sgt" 
+    width="600" 
+    height="450" 
+    style="border:0;" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+
+
+        <!-- Información de ubicación -->
+        <div class="location-info">
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Dirección</h3>
+            <p>Cobán, Alta Verapaz, Guatemala<br>
+            Lugar exacto por confirmar</p>
+          </div>
+
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <h3>Horario del Retiro</h3>
+            <p>3 de Agosto, 2025<br>
+            7:00 AM - Hora de inicio</p>
+          </div>
+
+          <div class="info-item">
+            <i class="fas fa-car"></i>
+            <h3>Cómo llegar</h3>
+            <p>Cobán está ubicado en Alta Verapaz, aproximadamente 4 horas desde la Ciudad de Guatemala por carretera</p>
+          </div>
+        </div>
+
+        <!-- Botón de direcciones -->
+        <div class="text-center mt-8">
+          <a href="https://maps.app.goo.gl/VEYCgE9z2M3cfHPJ9?g_st=ipc" 
+             target="_blank" 
+             class="directions-btn">
+            <i class="fas fa-directions"></i>
+            Obtener Direcciones
+          </a>
+        </div>
+      </div>
+
+      <!-- Información adicional -->
+      <div class="location-card fade-in-up">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-light text-white mb-4">Información Importante</h2>
+          <div class="w-16 h-px bg-white/30 mx-auto"></div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <h3 class="text-xl font-medium text-white mb-4">
+              <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+              Antes de salir
+            </h3>
+            <ul class="space-y-2 text-gray-300">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-400 mt-1 mr-2"></i>
+                Revisa el estado del clima antes de partir
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-400 mt-1 mr-2"></i>
+                Lleva ropa cómoda y abrigada
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-400 mt-1 mr-2"></i>
+                Asegúrate de tener suficiente combustible
+              </li>
+            </ul>
+          </div>
+          
+          <div class="space-y-4">
+            <h3 class="text-xl font-medium text-white mb-4">
+              <i class="fas fa-phone text-blue-400 mr-2"></i>
+              Contacto
+            </h3>
+            <p class="text-gray-300">
+              Si tienes alguna pregunta sobre la ubicación o necesitas ayuda para llegar, no dudes en contactarnos.
+            </p>
+         
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Setup mobile menu
+    function setupMobileMenu() {
+      const menuToggle = document.getElementById("menu-toggle")
+      const mobileMenu = document.getElementById("mobile-menu")
+      const mobileMenuOverlay = document.getElementById("mobile-menu-overlay")
+      const hamburger = menuToggle.querySelector(".hamburger")
+
+      const toggleMenu = () => {
+        const isActive = mobileMenu.classList.contains("active")
+
+        if (isActive) {
+          // Cerrar menú
+          mobileMenu.classList.remove("active")
+          mobileMenuOverlay.classList.remove("active")
+          hamburger.classList.remove("active")
+          document.body.style.overflow = ""
+        } else {
+          // Abrir menú
+          mobileMenu.classList.add("active")
+          mobileMenuOverlay.classList.add("active")
+          hamburger.classList.add("active")
+          document.body.style.overflow = "hidden"
+        }
+      }
+
+      menuToggle.addEventListener("click", toggleMenu)
+      mobileMenuOverlay.addEventListener("click", toggleMenu)
+
+      // Cerrar menú al hacer clic en un enlace
+      const mobileLinks = mobileMenu.querySelectorAll("a")
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          setTimeout(toggleMenu, 100)
+        })
+      })
+
+      // Cerrar menú con tecla Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+          toggleMenu()
+        }
+      })
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", () => {
+      setupMobileMenu()
+    })
+  </script>
+</body>
+</html>

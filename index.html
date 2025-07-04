@@ -3,26 +3,362 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galería Juvenil Cristiana</title>
+  <title>Retiro Cobán 2025 - Cuenta Regresiva</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Header minimalista */
+    .glass-effect {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-link.active {
+      color: #fff;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 1px;
+      bottom: -4px;
+      left: 50%;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link.active::after,
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 18px;
+      height: 1px;
+      background-color: #fff;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(-45deg) translate(-4px, 4px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(45deg) translate(-4px, -4px);
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: 320px;
+      max-width: 80vw;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 50;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-item {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-item a {
+      color: #d1d5db;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-nav-item a:hover {
+      color: #fff;
+    }
+
+    .mobile-menu.active .mobile-nav-item {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .mobile-menu.active .mobile-nav-item:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(4) {
+      transition-delay: 0.4s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(5) {
+      transition-delay: 0.5s;
+    }
+
+    /* Contador innovador */
+    .countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .countdown-display {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .countdown-digit {
+      font-size: 4rem;
+      font-weight: 100;
+      color: #fff;
+      font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+      min-width: 2ch;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .countdown-digit::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .countdown-digit:hover::before {
+      opacity: 1;
+    }
+
+    .countdown-separator {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      margin-bottom: 0.5rem;
+    }
+
+    .countdown-text {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .countdown-digit {
+        font-size: 2.5rem;
+      }
+
+      .countdown-separator {
+        width: 30px;
+      }
+
+      .countdown-text {
+        font-size: 0.6rem;
+        letter-spacing: 1px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .countdown-digit {
+        font-size: 2rem;
+      }
+
+      .countdown-separator {
+        width: 20px;
+      }
+
+      .countdown-text {
+        font-size: 0.5rem;
+      }
+    }
+
+    /* Animaciones elegantes */
+    .countdown-digit.update {
+      animation: digitUpdate 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes digitUpdate {
+      0% {
+        transform: scale(1) rotateX(0deg);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1) rotateX(-90deg);
+        opacity: 0.7;
+      }
+      100% {
+        transform: scale(1) rotateX(0deg);
+        opacity: 1;
+      }
+    }
+
+    /* Efectos de entrada */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .countdown-unit {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .countdown-unit:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    .countdown-unit:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .countdown-unit:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    .countdown-unit:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    /* Estados especiales */
+    .countdown-finished .countdown-digit {
+      color: #10b981;
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Animación para confetti */
+    @keyframes fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Mejoras de accesibilidad */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Scroll suave */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Utilidades */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-white">
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 min-h-screen">
   <!-- Header minimalista con efecto cristal -->
   <header class="fixed top-0 left-0 right-0 glass-effect z-50 border-b border-white/20">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-semibold text-gray-900"> Retiro Cobán </h1>
+      <a href="inicio.html" class="flex items-center space-x-3">
+        <img src="src/img/solologo.png" alt="Logo" class="h-10 w-auto object-contain">
+      </a>
       
       <!-- Navegación desktop -->
       <nav class="hidden md:flex space-x-8">
-        <a href="#inicio" class="nav-link active text-gray-700 hover:text-gray-900 py-2">Inicio</a>
-        <a href="#galeria" class="nav-link text-gray-700 hover:text-gray-900 py-2">Galería</a>
-        <a href="#ministerio" class="nav-link text-gray-700 hover:text-gray-900 py-2">Ministerio</a>
+       
+        <a href="" class="nav-link active text-white-300 hover:text-white py-2 transition-colors">Cuenta Regresiva</a>
+        <a href="ubicacion.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Ubicación</a>
+        <a href="recomendaciones.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Recomendaciones</a>
       </nav>
       
       <!-- Botón menú móvil -->
-      <button class="md:hidden text-gray-700" id="menu-toggle">
+      <button class="md:hidden text-gray-300" id="menu-toggle">
         <div class="hamburger">
           <span></span>
           <span></span>
@@ -33,153 +369,362 @@
   </header>
 
   <!-- Overlay del menú móvil -->
-  <div id="mobile-menu-overlay" class="mobile-menu-overlay fixed inset-0 bg-black/50 z-40 md:hidden"></div>
-
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+  
   <!-- Menú móvil -->
-  <nav id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-80 max-w-[80vw] bg-white/95 z-50 md:hidden">
+  <nav id="mobile-menu" class="mobile-menu">
     <div class="pt-20 px-6">
       <div class="space-y-4">
         <div class="mobile-nav-item">
-          <a href="#inicio" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 py-4 border-b border-gray-100 transition-colors">
+          <a href="inicio.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
             <i class="fas fa-home text-lg w-6"></i>
             <span class="text-lg font-medium">Inicio</span>
           </a>
         </div>
         <div class="mobile-nav-item">
-          <a href="#galeria" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 py-4 border-b border-gray-100 transition-colors">
-            <i class="fas fa-images text-lg w-6"></i>
-            <span class="text-lg font-medium">Galería</span>
+          <a href="contador.html" class="flex items-center space-x-3 text-blue-400 py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-clock text-lg w-6"></i>
+            <span class="text-lg font-medium">Cuenta Regresiva</span>
           </a>
         </div>
         <div class="mobile-nav-item">
-          <a href="#ministerio" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 py-4 border-b border-gray-100 transition-colors">
+          <a href="ubicacion.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-map-marker-alt text-lg w-6"></i>
+            <span class="text-lg font-medium">Ubicación</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="ministerio.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
             <i class="fas fa-church text-lg w-6"></i>
             <span class="text-lg font-medium">Ministerio</span>
           </a>
         </div>
         
         <!-- Información adicional en menú móvil -->
-        <div class="mobile-nav-item pt-8">
-          <div class="text-center space-y-3">
-            <div class="text-3xl">✝️</div>
-            <p class="text-sm text-gray-600 italic">"Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos"</p>
-            <p class="text-xs text-gray-500">- Mateo 18:20</p>
-          </div>
-        </div>
+       
       </div>
     </div>
   </nav>
 
-  <!-- Sección de Inicio -->
-  <section id="inicio" class="pt-24 pb-16">
-    <div class="container mx-auto px-6 text-center">
-      <h2 class="text-4xl md:text-5xl lg:text-7xl font-light text-gray-900 mb-6">Ministerio Juvenil</h2>
-      <p class="text-gray-600 text-lg md:text-xl mb-8 max-w-3xl mx-auto">Momentos especiales de nuestra comunidad juvenil cristiana. "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos" - Mateo 18:20</p>
-      <div class="text-sm text-gray-500">
-        <i class="fas fa-heart text-red-500 mr-2"></i>
-        Todas las fotos disponibles para descarga gratuita
+  <!-- Sección Principal del Contador -->
+  <main class="pt-24 pb-16 min-h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Fondo animado -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-black to-slate-800"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+    
+    <div class="container mx-auto px-6 text-center relative z-10">
+      <!-- Título minimalista -->
+      <div class="mb-16">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-thin text-white mb-8 tracking-wider">
+          RETIRO COBÁN
+          <span class="block text-3xl md:text-4xl lg:text-5xl font-light text-gray-400 mt-2">2025</span>
+        </h1>
+        <div class="w-24 h-px bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-8"></div>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos"
+        </p>
+        <p class="text-gray-500 text-sm mt-2">Mateo 18:20</p>
       </div>
-    </div>
-  </section>
 
-  <!-- Filtros elegantes -->
-  <section class="py-8">
-    <div class="container mx-auto px-6">
-      <div class="flex flex-wrap justify-center gap-2 md:gap-3" id="filters">
-        <button class="filter-btn active px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="all">
-          <i class="fas fa-heart mr-1 md:mr-2"></i>Todas
-        </button>
-        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="worship">
-          <i class="fas fa-hands mr-1 md:mr-2"></i>Alabanza
-        </button>
-        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="fellowship">
-          <i class="fas fa-users mr-1 md:mr-2"></i>Comunión
-        </button>
-        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="events">
-          <i class="fas fa-cross mr-1 md:mr-2"></i>Eventos
-        </button>
-        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="service">
-          <i class="fas fa-praying-hands mr-1 md:mr-2"></i>Servicio
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Galería principal -->
-  <section id="galeria" class="py-12">
-    <div class="container mx-auto px-4 md:px-6">
-      <div class="columns-2 md:columns-3 xl:columns-4 gap-3 md:gap-4" id="gallery-container">
-        <!-- Las imágenes se cargarán dinámicamente -->
-      </div>
-    </div>
-  </section>
-
-  <!-- Sección Ministerio -->
-  <section id="ministerio" class="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
-    <div class="container mx-auto px-6 text-center">
-      <h3 class="text-2xl md:text-3xl font-light text-gray-900 mb-8">Nuestro Ministerio Juvenil</h3>
-      <div class="max-w-2xl mx-auto space-y-6 text-gray-600">
-        <p class="text-base md:text-lg">"Ninguno tenga en poco tu juventud, sino sé ejemplo de los creyentes en palabra, conducta, amor, espíritu, fe y pureza." - 1 Timoteo 4:12</p>
-        <p class="text-sm md:text-base">Una comunidad de jóvenes apasionados por Jesús, creciendo juntos en fe, amistad y propósito.</p>
-        <div class="flex justify-center items-center space-x-6 md:space-x-8 pt-8">
-          <div class="text-center">
-            <div class="text-xl md:text-2xl font-semibold text-blue-600" id="photo-count">24</div>
-            <div class="text-xs md:text-sm text-gray-500">Fotos</div>
+      <!-- Contador innovador -->
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-2xl md:text-3xl font-light text-white mb-2">Tiempo restante</h2>
+          <div class="w-16 h-px bg-white/30 mx-auto"></div>
+        </div>
+        
+        <div class="grid grid-cols-4 gap-4 md:gap-8">
+          <div class="countdown-unit">
+            <div class="countdown-display">
+              <span id="days" class="countdown-digit">00</span>
+            </div>
+            <div class="countdown-separator"></div>
+            <span class="countdown-text">DÍAS</span>
           </div>
-          <div class="text-center">
-            <div class="text-xl md:text-2xl font-semibold text-green-600">HD</div>
-            <div class="text-xs md:text-sm text-gray-500">Calidad</div>
+          
+          <div class="countdown-unit">
+            <div class="countdown-display">
+              <span id="hours" class="countdown-digit">00</span>
+            </div>
+            <div class="countdown-separator"></div>
+            <span class="countdown-text">HORAS</span>
           </div>
-          <div class="text-center">
-            <div class="text-xl md:text-2xl font-semibold text-purple-600">Gratis</div>
-            <div class="text-xs md:text-sm text-gray-500">Descarga</div>
+          
+          <div class="countdown-unit">
+            <div class="countdown-display">
+              <span id="minutes" class="countdown-digit">00</span>
+            </div>
+            <div class="countdown-separator"></div>
+            <span class="countdown-text">MINUTOS</span>
+          </div>
+          
+          <div class="countdown-unit">
+            <div class="countdown-display">
+              <span id="seconds" class="countdown-digit">00</span>
+            </div>
+            <div class="countdown-separator"></div>
+            <span class="countdown-text">SEGUNDOS</span>
           </div>
         </div>
-        <div class="pt-6">
-          <p class="text-xs md:text-sm text-gray-500 italic">"Jesús le dijo: Yo soy el camino, y la verdad, y la vida" - Juan 14:6</p>
-        </div>
       </div>
     </div>
-  </section>
+  </main>
 
-  <!-- Modal para vista ampliada -->
-  <div id="gallery-modal" class="fixed inset-0 modal-backdrop bg-black/80 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-    <div class="modal-content relative w-full max-w-6xl mx-4 h-full max-h-[90vh] flex items-center justify-center">
-      <!-- Controles superiores -->
-      <div class="absolute top-2 md:top-4 left-2 md:left-4 right-2 md:right-4 z-10 flex justify-between items-center">
-        <div class="glass-effect rounded-full px-3 md:px-4 py-1 md:py-2 text-white text-xs md:text-sm">
-          <span id="modal-counter">1 / 24</span>
-        </div>
-        <div class="flex space-x-1 md:space-x-2">
-          <button id="download-modal" class="w-8 h-8 md:w-10 md:h-10 rounded-full glass-effect text-white hover:bg-white/20 flex items-center justify-center transition-colors">
-            <i class="fas fa-download text-xs md:text-sm"></i>
-          </button>
-          <button id="close-modal" class="w-8 h-8 md:w-10 md:h-10 rounded-full glass-effect text-white hover:bg-white/20 flex items-center justify-center transition-colors">
-            <i class="fas fa-times text-xs md:text-sm"></i>
-          </button>
-        </div>
-      </div>
-      
-      <div id="modal-content" class="w-full h-full flex items-center justify-center p-2 md:p-4">
-        <!-- Contenido dinámico -->
-      </div>
-      
-      <!-- Controles de navegación -->
-      <button id="prev-item" class="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 text-white text-lg md:text-xl w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect hover:bg-white/20 flex items-center justify-center transition-colors">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button id="next-item" class="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 text-white text-lg md:text-xl w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect hover:bg-white/20 flex items-center justify-center transition-colors">
-        <i class="fas fa-chevron-right"></i>
-      </button>
+  <script>
+    // Configuración del contador
+    class CountdownTimer {
+      constructor() {
+        this.initializeTimer()
+        this.setupMobileMenu()
+        this.startCountdown()
+      }
 
-      <!-- Información de la foto -->
-      <div id="modal-info" class="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 glass-effect rounded-xl md:rounded-2xl p-3 md:p-4 text-white">
-        <h3 id="modal-title" class="font-semibold mb-1 text-sm md:text-base"></h3>
-        <p id="modal-description" class="text-xs md:text-sm opacity-80"></p>
-      </div>
-    </div>
-  </div>
+      initializeTimer() {
+        // Fecha objetivo: 3 de agosto de 2025 a las 7:00 AM (hora de Guatemala)
+        this.targetDate = new Date('2025-08-03T07:00:00-06:00')
 
-<script src="script-updated.js"></script>
+        // Elementos del DOM
+        this.daysElement = document.getElementById("days")
+        this.hoursElement = document.getElementById("hours")
+        this.minutesElement = document.getElementById("minutes")
+        this.secondsElement = document.getElementById("seconds")
+
+        // Variables para detectar cambios
+        this.previousValues = {
+          days: null,
+          hours: null,
+          minutes: null,
+          seconds: null,
+        }
+      }
+
+      setupMobileMenu() {
+        const menuToggle = document.getElementById("menu-toggle")
+        const mobileMenu = document.getElementById("mobile-menu")
+        const mobileMenuOverlay = document.getElementById("mobile-menu-overlay")
+        const hamburger = menuToggle.querySelector(".hamburger")
+
+        const toggleMenu = () => {
+          const isActive = mobileMenu.classList.contains("active")
+
+          if (isActive) {
+            // Cerrar menú
+            mobileMenu.classList.remove("active")
+            mobileMenuOverlay.classList.remove("active")
+            hamburger.classList.remove("active")
+            document.body.style.overflow = ""
+          } else {
+            // Abrir menú
+            mobileMenu.classList.add("active")
+            mobileMenuOverlay.classList.add("active")
+            hamburger.classList.add("active")
+            document.body.style.overflow = "hidden"
+          }
+        }
+
+        menuToggle.addEventListener("click", toggleMenu)
+        mobileMenuOverlay.addEventListener("click", toggleMenu)
+
+        // Cerrar menú al hacer clic en un enlace
+        const mobileLinks = mobileMenu.querySelectorAll("a")
+        mobileLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            setTimeout(toggleMenu, 100)
+          })
+        })
+
+        // Cerrar menú con tecla Escape
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+            toggleMenu()
+          }
+        })
+      }
+
+      calculateTimeRemaining() {
+        const now = new Date().getTime()
+        const distance = this.targetDate.getTime() - now
+
+        if (distance < 0) {
+          return {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            finished: true,
+          }
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+        return {
+          days,
+          hours,
+          minutes,
+          seconds,
+          finished: false,
+        }
+      }
+
+      formatNumber(number) {
+        return number.toString().padStart(2, "0")
+      }
+
+      addPulseEffect(element) {
+        element.classList.add("update")
+        setTimeout(() => {
+          element.classList.remove("update")
+        }, 600)
+      }
+
+      updateDisplay(timeRemaining) {
+        const { days, hours, minutes, seconds, finished } = timeRemaining
+
+        // Actualizar días
+        if (this.previousValues.days !== days) {
+          this.daysElement.textContent = this.formatNumber(days)
+          if (this.previousValues.days !== null) {
+            this.addPulseEffect(this.daysElement)
+          }
+          this.previousValues.days = days
+        }
+
+        // Actualizar horas
+        if (this.previousValues.hours !== hours) {
+          this.hoursElement.textContent = this.formatNumber(hours)
+          if (this.previousValues.hours !== null) {
+            this.addPulseEffect(this.hoursElement)
+          }
+          this.previousValues.hours = hours
+        }
+
+        // Actualizar minutos
+        if (this.previousValues.minutes !== minutes) {
+          this.minutesElement.textContent = this.formatNumber(minutes)
+          if (this.previousValues.minutes !== null) {
+            this.addPulseEffect(this.minutesElement)
+          }
+          this.previousValues.minutes = minutes
+        }
+
+        // Actualizar segundos
+        if (this.previousValues.seconds !== seconds) {
+          this.secondsElement.textContent = this.formatNumber(seconds)
+          if (this.previousValues.seconds !== null) {
+            this.addPulseEffect(this.secondsElement)
+          }
+          this.previousValues.seconds = seconds
+        }
+
+        // Manejar cuando el contador termine
+        if (finished) {
+          this.handleCountdownFinished()
+        }
+      }
+
+      handleCountdownFinished() {
+        document.body.classList.add("countdown-finished")
+
+        const titleElement = document.querySelector("h2")
+        if (titleElement) {
+          titleElement.textContent = "¡El retiro ha comenzado!"
+          titleElement.style.color = "#10b981"
+          titleElement.style.textShadow = "0 0 30px rgba(16, 185, 129, 0.5)"
+        }
+
+        this.showCelebration()
+      }
+
+      showCelebration() {
+        const colors = ["#60a5fa", "#34d399", "#fbbf24", "#f87171", "#a78bfa"]
+
+        for (let i = 0; i < 100; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("div")
+            confetti.style.cssText = `
+              position: fixed;
+              top: -10px;
+              left: ${Math.random() * 100}%;
+              width: 8px;
+              height: 8px;
+              background: ${colors[Math.floor(Math.random() * colors.length)]};
+              border-radius: 50%;
+              pointer-events: none;
+              z-index: 1000;
+              box-shadow: 0 0 10px currentColor;
+              animation: fall 4s linear forwards;
+            `
+
+            document.body.appendChild(confetti)
+
+            setTimeout(() => {
+              confetti.remove()
+            }, 4000)
+          }, i * 50)
+        }
+      }
+
+      startCountdown() {
+        // Actualización inicial
+        const initialTime = this.calculateTimeRemaining()
+        this.updateDisplay(initialTime)
+
+        // Actualizar cada segundo
+        this.intervalId = setInterval(() => {
+          const timeRemaining = this.calculateTimeRemaining()
+          this.updateDisplay(timeRemaining)
+
+          if (timeRemaining.finished) {
+            clearInterval(this.intervalId)
+          }
+        }, 1000)
+      }
+
+      // Método para limpiar el intervalo si es necesario
+      destroy() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId)
+        }
+      }
+    }
+
+    // Inicializar el contador cuando el DOM esté listo
+    let countdown
+    document.addEventListener("DOMContentLoaded", () => {
+      countdown = new CountdownTimer()
+
+      // Limpiar el intervalo cuando la página se descarga
+      window.addEventListener("beforeunload", () => {
+        countdown.destroy()
+      })
+    })
+
+    // Manejar cambios de visibilidad de la página
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        console.log("Página oculta")
+      } else {
+        console.log("Página visible")
+      }
+    })
+
+    // Función para manejar errores
+    window.addEventListener("error", (e) => {
+      console.error("Error en el contador:", e.error)
+    })
+
+    // Función de utilidad para debugging
+    window.debugCountdown = () => {
+      if (countdown) {
+        console.log("Estado del contador:", {
+          targetDate: new Date(countdown.targetDate),
+          timeRemaining: countdown.calculateTimeRemaining(),
+        })
+      }
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería Juvenil Cristiana</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-white">
+  <!-- Header minimalista con efecto cristal -->
+  <header class="fixed top-0 left-0 right-0 glass-effect z-50 border-b border-white/20">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#inicio" class="flex items-center space-x-3">
+      <img src="src/img/logo.png" alt="Logo" class="h-10 w-auto object-contain">
+      </a>
+      
+      <!-- Navegación desktop -->
+      <nav class="hidden md:flex space-x-8">
+      <a href="#inicio" class="nav-link active text-gray-700 hover:text-gray-900 py-2">Inicio</a>
+      <a href="#galeria" class="nav-link text-gray-700 hover:text-gray-900 py-2">Galería</a>
+      <a href="#ministerio" class="nav-link text-gray-700 hover:text-gray-900 py-2">Ministerio</a>
+      </nav>
+      
+      <!-- Botón menú móvil -->
+      <button class="md:hidden text-gray-700" id="menu-toggle">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Overlay del menú móvil -->
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay fixed inset-0 bg-black/50 z-40 md:hidden"></div>
+
+  <!-- Menú móvil -->
+  <nav id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-80 max-w-[80vw] bg-white/95 z-50 md:hidden">
+    <div class="pt-20 px-6">
+      <div class="space-y-4">
+        <div class="mobile-nav-item">
+          <a href="#inicio" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 py-4 border-b border-gray-100 transition-colors">
+            <i class="fas fa-home text-lg w-6"></i>
+            <span class="text-lg font-medium">Inicio</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="#galeria" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 py-4 border-b border-gray-100 transition-colors">
+            <i class="fas fa-images text-lg w-6"></i>
+            <span class="text-lg font-medium">Galería</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="#ministerio" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 py-4 border-b border-gray-100 transition-colors">
+            <i class="fas fa-church text-lg w-6"></i>
+            <span class="text-lg font-medium">Ministerio</span>
+          </a>
+        </div>
+        
+        <!-- Información adicional en menú móvil -->
+        <div class="mobile-nav-item pt-8">
+          <div class="text-center space-y-3">
+            <div class="text-3xl">✝️</div>
+            <p class="text-sm text-gray-600 italic">"Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos"</p>
+            <p class="text-xs text-gray-500">- Mateo 18:20</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sección de Inicio -->
+  <section id="inicio" class="pt-24 pb-16">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-4xl md:text-5xl lg:text-7xl font-light text-gray-900 mb-6">Retiro Coban 2025</h2>
+      <p class="text-gray-600 text-lg md:text-xl mb-8 max-w-3xl mx-auto">"Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos" - Mateo 18:20</p>
+      <div class="text-sm text-gray-500">
+        <i class="fas fa-heart text-red-500 mr-2"></i>
+        Todas las fotos disponibles para descargar
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros elegantes -->
+  <section class="py-8">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-wrap justify-center gap-2 md:gap-3" id="filters">
+        <button class="filter-btn active px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="all">
+          <i class="fas fa-heart mr-1 md:mr-2"></i>Todas
+        </button>
+        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="worship">
+          <i class="fas fa-hands mr-1 md:mr-2"></i>Alabanza
+        </button>
+        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="fellowship">
+          <i class="fas fa-users mr-1 md:mr-2"></i>Comunión
+        </button>
+        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="events">
+          <i class="fas fa-cross mr-1 md:mr-2"></i>Eventos
+        </button>
+        <button class="filter-btn px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm glass-effect" data-filter="service">
+          <i class="fas fa-praying-hands mr-1 md:mr-2"></i>Servicio
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galería principal -->
+  <section id="galeria" class="py-12">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="columns-2 md:columns-3 xl:columns-4 gap-3 md:gap-4" id="gallery-container">
+        <!-- Las imágenes se cargarán dinámicamente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Ministerio -->
+  <section id="ministerio" class="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-2xl md:text-3xl font-light text-gray-900 mb-8">Nuestro Ministerio Juvenil</h3>
+      <div class="max-w-2xl mx-auto space-y-6 text-gray-600">
+        <p class="text-base md:text-lg">"Ninguno tenga en poco tu juventud, sino sé ejemplo de los creyentes en palabra, conducta, amor, espíritu, fe y pureza." - 1 Timoteo 4:12</p>
+        <p class="text-sm md:text-base">Una comunidad de jóvenes apasionados por Jesús, creciendo juntos en fe, amistad y propósito.</p>
+        <div class="flex justify-center items-center space-x-6 md:space-x-8 pt-8">
+          <div class="text-center">
+            <div class="text-xl md:text-2xl font-semibold text-blue-600" id="photo-count">24</div>
+            <div class="text-xs md:text-sm text-gray-500">Fotos</div>
+          </div>
+        
+          
+        </div>
+        <div class="pt-6">
+          <p class="text-xs md:text-sm text-gray-500 italic">"Jesús le dijo: Yo soy el camino, y la verdad, y la vida" - Juan 14:6</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal para vista ampliada -->
+  <div id="gallery-modal" class="fixed inset-0 modal-backdrop bg-black/80 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+    <div class="modal-content relative w-full max-w-6xl mx-4 h-full max-h-[90vh] flex items-center justify-center">
+      <!-- Controles superiores -->
+      <div class="absolute top-2 md:top-4 left-2 md:left-4 right-2 md:right-4 z-10 flex justify-between items-center">
+        <div class="glass-effect rounded-full px-3 md:px-4 py-1 md:py-2 text-white text-xs md:text-sm">
+          <span id="modal-counter">1 / 24</span>
+        </div>
+        <div class="flex space-x-1 md:space-x-2">
+          <button id="download-modal" class="w-8 h-8 md:w-10 md:h-10 rounded-full glass-effect text-white hover:bg-white/20 flex items-center justify-center transition-colors">
+            <i class="fas fa-download text-xs md:text-sm"></i>
+          </button>
+          <button id="close-modal" class="w-8 h-8 md:w-10 md:h-10 rounded-full glass-effect text-white hover:bg-white/20 flex items-center justify-center transition-colors">
+            <i class="fas fa-times text-xs md:text-sm"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div id="modal-content" class="w-full h-full flex items-center justify-center p-2 md:p-4">
+        <!-- Contenido dinámico -->
+      </div>
+      
+      <!-- Controles de navegación -->
+      <button id="prev-item" class="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 text-white text-lg md:text-xl w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect hover:bg-white/20 flex items-center justify-center transition-colors">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button id="next-item" class="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 text-white text-lg md:text-xl w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect hover:bg-white/20 flex items-center justify-center transition-colors">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <!-- Información de la foto -->
+      <div id="modal-info" class="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 glass-effect rounded-xl md:rounded-2xl p-3 md:p-4 text-white">
+        <h3 id="modal-title" class="font-semibold mb-1 text-sm md:text-base"></h3>
+        <p id="modal-description" class="text-xs md:text-sm opacity-80"></p>
+      </div>
+    </div>
+  </div>
+
+<script src="script-updated.js"></script>
+</body>
+</html>

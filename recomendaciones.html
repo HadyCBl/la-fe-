@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retiro Cobán 2025 - Recomendaciones</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Header minimalista */
+    .glass-effect {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-link.active {
+      color: #fff;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 1px;
+      bottom: -4px;
+      left: 50%;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link.active::after,
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 18px;
+      height: 1px;
+      background-color: #fff;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(-45deg) translate(-4px, 4px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(45deg) translate(-4px, -4px);
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: 320px;
+      max-width: 80vw;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 50;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-item {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-item a {
+      color: #d1d5db;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-nav-item a:hover {
+      color: #fff;
+    }
+
+    .mobile-menu.active .mobile-nav-item {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .mobile-menu.active .mobile-nav-item:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+    .mobile-menu.active .mobile-nav-item:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+
+    /* Recommendation card styles */
+    .recommendation-card {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .recommendation-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .recommendation-card:hover::before {
+      opacity: 1;
+    }
+
+    .recommendation-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .weather-card {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .weather-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .weather-day {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .weather-day:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .weather-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .temp-range {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #60a5fa;
+    }
+
+    .packing-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .packing-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .packing-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-3px);
+    }
+
+    .packing-card.men {
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .packing-card.women {
+      border-color: rgba(219, 39, 119, 0.3);
+    }
+
+    .packing-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5rem;
+    }
+
+    .packing-list li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .packing-list li:last-child {
+      border-bottom: none;
+    }
+
+    .packing-list li:hover {
+      background: rgba(255, 255, 255, 0.05);
+      padding-left: 1rem;
+      border-radius: 8px;
+    }
+
+    .packing-list li i {
+      margin-right: 0.75rem;
+      width: 20px;
+      color: #60a5fa;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #60a5fa;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .weather-disclaimer {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+
+    .highlight {
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fbbf24;
+    }
+
+    /* Efectos de entrada */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .fade-in-up:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    .fade-in-up:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .fade-in-up:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .recommendation-card {
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .weather-info {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .packing-section {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .packing-card {
+        padding: 1.5rem;
+      }
+    }
+
+    /* Scroll suave */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Utilidades */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 min-h-screen">
+  <!-- Header minimalista con efecto cristal -->
+  <header class="fixed top-0 left-0 right-0 glass-effect z-50 border-b border-white/20">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="inicio.html" class="flex items-center space-x-3">
+        <img src="src/img/solologo.png" alt="Logo" class="h-10 w-auto object-contain">
+      </a>
+      
+      <!-- Navegación desktop -->
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Cuenta Regresiva</a>
+        <a href="ubicacion.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Ubicación</a>
+        <a href="recomendaciones.html" class="nav-link active text-white-300 hover:text-white py-2 transition-colors">Recomendaciones</a>
+      </nav>
+      
+      <!-- Botón menú móvil -->
+      <button class="md:hidden text-gray-300" id="menu-toggle">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Overlay del menú móvil -->
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+  
+  <!-- Menú móvil -->
+  <nav id="mobile-menu" class="mobile-menu">
+    <div class="pt-20 px-6">
+      <div class="space-y-4">
+        <div class="mobile-nav-item">
+          <a href="index.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-clock text-lg w-6"></i>
+            <span class="text-lg font-medium">Cuenta Regresiva</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="ubicacion.html" class="flex items-center space-x-3 text-gray-300 hover:text-white py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-map-marker-alt text-lg w-6"></i>
+            <span class="text-lg font-medium">Ubicación</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item">
+          <a href="recomendaciones.html" class="flex items-center space-x-3 text-blue-400 py-4 border-b border-gray-700 transition-colors">
+            <i class="fas fa-lightbulb text-lg w-6"></i>
+            <span class="text-lg font-medium">Recomendaciones</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sección Principal de Recomendaciones -->
+  <main class="pt-24 pb-16 min-h-screen relative overflow-hidden">
+    <!-- Fondo animado -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-black to-slate-800"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+      <!-- Título minimalista -->
+      <div class="text-center mb-16 fade-in-up">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-thin text-white mb-8 tracking-wider">
+          RECOMENDACIONES
+          <span class="block text-3xl md:text-4xl lg:text-5xl font-light text-gray-400 mt-2">Retiro Cobán 2025</span>
+        </h1>
+        <div class="w-24 h-px bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-8"></div>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          Prepárate para una experiencia única con Dios en las montañas de Cobán
+        </p>
+      </div>
+
+      <!-- Clima Estimado -->
+      <div class="recommendation-card weather-card fade-in-up">
+        <div class="text-center mb-6">
+          <h2 class="text-3xl md:text-4xl font-light text-white mb-4">
+            <i class="fas fa-cloud-sun text-blue-400 mr-3"></i>
+            Clima Estimado
+          </h2>
+          <div class="w-16 h-px bg-white/30 mx-auto"></div>
+        </div>
+        
+        <div class="weather-info" id="weather-info">
+          <div class="weather-day">
+            <div class="weather-icon">
+              <div class="loading-spinner"></div>
+            </div>
+            <h3 class="text-xl font-medium text-white mb-2">3 de Agosto</h3>
+            <p class="text-gray-300 mb-2">Cargando clima...</p>
+            <div class="temp-range">-- °C</div>
+          </div>
+          
+          <div class="weather-day">
+            <div class="weather-icon">
+              <div class="loading-spinner"></div>
+            </div>
+            <h3 class="text-xl font-medium text-white mb-2">4 de Agosto</h3>
+            <p class="text-gray-300 mb-2">Cargando clima...</p>
+            <div class="temp-range">-- °C</div>
+          </div>
+        </div>
+
+        <div class="weather-disclaimer">
+          <p class="text-yellow-200 text-sm">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Nota:</strong> Este pronóstico es estimativo y puede variar. Te recomendamos verificar el clima más cerca de la fecha del retiro.
+          </p>
+        </div>
+      </div>
+
+      <!-- Recomendaciones de Empaque -->
+      <div class="recommendation-card fade-in-up">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-light text-white mb-4">
+            <i class="fas fa-suitcase text-green-400 mr-3"></i>
+            ¿Qué traer?
+          </h2>
+          <div class="w-16 h-px bg-white/30 mx-auto"></div>
+        </div>
+        
+        <div class="packing-section">
+          <!-- Recomendaciones para Hombres -->
+          <div class="packing-card men">
+            <div class="text-center mb-6">
+              <i class="fas fa-male text-4xl text-blue-400 mb-3"></i>
+              <h3 class="text-2xl font-medium text-white">Para Hombres</h3>
+            </div>
+            
+            <ul class="packing-list">
+              <li>
+                <i class="fas fa-tshirt"></i>
+                <span>Carpa o tienda de campaña</span>
+              </li>
+              <li>
+                <i class="fas fa-bed"></i>
+                <span>Sleeping bag (bolsa de dormir)</span>
+              </li>
+              <li>
+                <i class="fas fa-swimmer"></i>
+                <span>Pantaloneta para nadar</span>
+              </li>
+              <li>
+                <i class="fas fa-tshirt"></i>
+                <span>2 mudadas de ropa completas</span>
+              </li>
+              <li>
+                <i class="fas fa-running"></i>
+                <span>Zapatos cómodos para caminar</span>
+              </li>
+              <li>
+                <i class="fas fa-vest"></i>
+                <span>Suéter o chaqueta abrigada</span>
+              </li>
+              <li>
+                <i class="fas fa-soap"></i>
+                <span>Artículos de higiene personal</span>
+              </li>
+              <li>
+                <i class="fas fa-cross"></i>
+                <span>Biblia y libreta para apuntes</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Recomendaciones para Mujeres -->
+          <div class="packing-card women">
+            <div class="text-center mb-6">
+              <i class="fas fa-female text-4xl text-pink-400 mb-3"></i>
+              <h3 class="text-2xl font-medium text-white">Para Mujeres</h3>
+            </div>
+            
+            <ul class="packing-list">
+              <li>
+                <i class="fas fa-tshirt"></i>
+                <span>Pants <span class="highlight">HOLGADOS</span> y cómodos</span>
+              </li>
+              <li>
+                <i class="fas fa-bed"></i>
+                <span>Sleeping bag (bolsa de dormir)</span>
+              </li>
+              <li>
+                <i class="fas fa-vest"></i>
+                <span>Suéteres abrigados</span>
+              </li>
+              <li>
+                <i class="fas fa-tshirt"></i>
+                <span>2 mudadas de ropa completas</span>
+              </li>
+              <li>
+                <i class="fas fa-running"></i>
+                <span>Zapatos cómodos para caminar</span>
+              </li>
+              <li>
+                <i class="fas fa-tshirt"></i>
+                <span>Ropa interior adicional</span>
+              </li>
+              <li>
+                <i class="fas fa-soap"></i>
+                <span>Artículos de higiene personal</span>
+              </li>
+              <li>
+                <i class="fas fa-cross"></i>
+                <span>Biblia y libreta para apuntes</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recomendaciones Generales -->
+      <div class="recommendation-card fade-in-up">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-light text-white mb-4">
+            <i class="fas fa-info-circle text-yellow-400 mr-3"></i>
+            Recomendaciones Generales
+          </h2>
+          <div class="w-16 h-px bg-white/30 mx-auto"></div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="space-y-6">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-droplet text-blue-400 mt-1"></i>
+              <div>
+                <h3 class="font-medium text-white mb-2">Hidratación</h3>
+                <p class="text-gray-300">Trae suficiente agua y mantente hidratado durante todo el retiro.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-mountain text-green-400 mt-1"></i>
+              <div>
+                <h3 class="font-medium text-white mb-2">Clima de Montaña</h3>
+                <p class="text-gray-300">Cobán tiene un clima fresco, especialmente en la madrugada y noche.</p>
+              </div>
+            </div>
+            
+           
+          </div>
+          
+          <div class="space-y-6">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-heart text-red-400 mt-1"></i>
+              <div>
+                <h3 class="font-medium text-white mb-2">Corazón Abierto</h3>
+                <p class="text-gray-300">Ven con expectativa de encontrarte con Dios de manera especial.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-users text-orange-400 mt-1"></i>
+              <div>
+                <h3 class="font-medium text-white mb-2">Compañerismo</h3>
+                <p class="text-gray-300">Prepárate para compartir y conocer nuevos hermanos en la fe.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-praying-hands text-yellow-400 mt-1"></i>
+              <div>
+                <h3 class="font-medium text-white mb-2">Oración</h3>
+                <p class="text-gray-300">Ora por el retiro y por cada persona que asistirá.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Setup mobile menu
+    function setupMobileMenu() {
+      const menuToggle = document.getElementById("menu-toggle")
+      const mobileMenu = document.getElementById("mobile-menu")
+      const mobileMenuOverlay = document.getElementById("mobile-menu-overlay")
+      const hamburger = menuToggle.querySelector(".hamburger")
+
+      const toggleMenu = () => {
+        const isActive = mobileMenu.classList.contains("active")
+
+        if (isActive) {
+          mobileMenu.classList.remove("active")
+          mobileMenuOverlay.classList.remove("active")
+          hamburger.classList.remove("active")
+          document.body.style.overflow = ""
+        } else {
+          mobileMenu.classList.add("active")
+          mobileMenuOverlay.classList.add("active")
+          hamburger.classList.add("active")
+          document.body.style.overflow = "hidden"
+        }
+      }
+
+      menuToggle.addEventListener("click", toggleMenu)
+      mobileMenuOverlay.addEventListener("click", toggleMenu)
+
+      const mobileLinks = mobileMenu.querySelectorAll("a")
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          setTimeout(toggleMenu, 100)
+        })
+      })
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+          toggleMenu()
+        }
+      })
+    }
+
+    // Weather API function
+    async function loadWeather() {
+      try {
+        // Coordenadas de Cobán, Guatemala
+        const lat = 15.4709;
+        const lon = -90.3708;
+        
+        // Usando Open-Meteo API (gratuita, sin API key)
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code&timezone=America%2FGuatemala&start_date=2025-08-03&end_date=2025-08-04`
+        );
+        
+        const data = await response.json();
+        
+        if (data.daily) {
+          updateWeatherDisplay(data.daily);
+        } else {
+          showWeatherError();
+        }
+      } catch (error) {
+        console.error('Error loading weather:', error);
+        showWeatherError();
+      }
+    }
+
+    function updateWeatherDisplay(dailyData) {
+      const weatherInfo = document.getElementById('weather-info');
+      const dates = ['3 de Agosto', '4 de Agosto'];
+      
+      weatherInfo.innerHTML = '';
+      
+      for (let i = 0; i < 2; i++) {
+        const maxTemp = dailyData.temperature_2m_max[i];
+        const minTemp = dailyData.temperature_2m_min[i];
+        const precipitation = dailyData.precipitation_sum[i];
+        const weatherCode = dailyData.weather_code[i];
+        
+        const weatherIcon = getWeatherIcon(weatherCode);
+        const weatherDescription = getWeatherDescription(weatherCode);
+        
+        const weatherCard = document.createElement('div');
+        weatherCard.className = 'weather-day';
+        weatherCard.innerHTML = `
+          <div class="weather-icon">
+            ${weatherIcon}
+          </div>
+          <h3 class="text-xl font-medium text-white mb-2">${dates[i]}</h3>
+          <p class="text-gray-300 mb-2">${weatherDescription}</p>
+          <div class="temp-range">${Math.round(minTemp)}°C - ${Math.round(maxTemp)}°C</div>
+          <p class="text-sm text-gray-400 mt-2">Precipitación: ${precipitation}mm</p>
+        `;
+        
+        weatherInfo.appendChild(weatherCard);
+      }
+    }
+
+    function getWeatherIcon(code) {
+      // Códigos de clima WMO
+      if (code === 0) return '☀️';
+      if (code <= 3) return '⛅';
+      if (code <= 48) return '🌫️';
+      if (code <= 57) return '🌦️';
+      if (code <= 67) return '🌧️';
+      if (code <= 77) return '🌨️';
+      if (code <= 82) return '🌦️';
+      if (code <= 86) return '🌨️';
+      if (code <= 99) return '⛈️';
+      return '🌤️';
+    }
+
+    function getWeatherDescription(code) {
+      if (code === 0) return 'Despejado';
+      if (code <= 3) return 'Parcialmente nublado';
+      if (code <= 48) return 'Nublado';
+      if (code <= 57) return 'Llovizna';
+      if (code <= 67) return 'Lluvia';
+      if (code <= 77) return 'Nieve';
+      if (code <= 82) return 'Chubascos';
+      if (code <= 86) return 'Nieve';
+      if (code <= 99) return 'Tormenta';
+      return 'Clima variable';
+    }
+
+    function showWeatherError() {
+      const weatherInfo = document.getElementById('weather-info');
+      weatherInfo.innerHTML = `
+        <div class="weather-day">
+          <div class="weather-icon">🌤️</div>
+          <h3 class="text-xl font-medium text-white mb-2">3 de Agosto</h3>
+          <p class="text-gray-300 mb-2">Clima estimado</p>
+          <div class="temp-range">15°C - 25°C</div>
+          <p class="text-sm text-gray-400 mt-2">Fresco y agradable</p>
+        </div>
+        <div class="weather-day">
+          <div class="weather-icon">⛅</div>
+          <h3 class="text-xl font-medium text-white mb-2">4 de Agosto</h3>
+          <p class="text-gray-300 mb-2">Clima estimado</p>
+          <div class="temp-range">14°C - 24°C</div>
+          <p class="text-sm text-gray-400 mt-2">Parcialmente nublado</p>
+        </div>
+      `;
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", () => {
+      setupMobileMenu();
+      loadWeather();
+    });
+  </script>
+</body>
+</html>
