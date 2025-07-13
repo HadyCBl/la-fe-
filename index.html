@@ -65,6 +65,7 @@
       flex-direction: column;
       cursor: pointer;
       padding: 4px;
+      transition: all 0.3s ease;
     }
 
     .hamburger span {
@@ -85,6 +86,22 @@
 
     .hamburger.active span:nth-child(3) {
       transform: rotate(45deg) translate(-4px, -4px);
+    }
+
+    /* Efecto de pulso suave para el menú hamburguesa */
+    .hamburger.pulse {
+      animation: gentlePulse 0.8s ease-in-out 3;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+      }
     }
 
     /* Mobile menu overlay */
@@ -159,6 +176,245 @@
       transition-delay: 0.5s;
     }
 
+    /* NUEVO: Estilos para la recomendación del menú con efecto cristal mejorado */
+    .menu-recommendation {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(25px) saturate(1.8);
+      -webkit-backdrop-filter: blur(25px) saturate(1.8);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      z-index: 100;
+      max-width: 90vw;
+      width: 420px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-recommendation::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 50%, 
+        rgba(255, 255, 255, 0.02) 100%);
+      border-radius: 24px;
+      z-index: -1;
+    }
+
+    .menu-recommendation.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .recommendation-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+    }
+
+    .recommendation-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .recommendation-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-size: 200% 200%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: float 4s ease-in-out infinite, gradientShift 6s ease-in-out infinite;
+      box-shadow: 
+        0 10px 25px rgba(102, 126, 234, 0.3),
+        0 0 20px rgba(102, 126, 234, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-12px) rotate(5deg);
+      }
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .recommendation-title {
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 1rem;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .recommendation-text {
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      font-weight: 300;
+    }
+
+    .recommendation-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-size: 200% 200%;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        0 8px 25px rgba(102, 126, 234, 0.3),
+        0 3px 10px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 
+        0 15px 35px rgba(102, 126, 234, 0.4),
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      background-position: 100% 50%;
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.9);
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      font-weight: 400;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 0.95rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-secondary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.05);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-secondary:hover::before {
+      opacity: 1;
+    }
+
+    .btn-secondary:hover {
+      color: white;
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Animación de entrada suave */
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0px) scale(1);
+      }
+    }
+
+    .menu-recommendation.animate-in {
+      animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
     /* Contador innovador */
     .countdown-unit {
       display: flex;
@@ -217,7 +473,7 @@
       text-transform: uppercase;
     }
 
-    /* Responsive */
+    /* Responsive mejorado para el modal cristal */
     @media (max-width: 768px) {
       .countdown-digit {
         font-size: 2.5rem;
@@ -230,6 +486,28 @@
       .countdown-text {
         font-size: 0.6rem;
         letter-spacing: 1px;
+      }
+
+      .menu-recommendation {
+        width: 380px;
+        padding: 2rem 1.75rem;
+        border-radius: 20px;
+      }
+
+      .recommendation-title {
+        font-size: 1.4rem;
+      }
+
+      .recommendation-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 1.1rem 1.5rem;
       }
     }
 
@@ -244,6 +522,46 @@
 
       .countdown-text {
         font-size: 0.5rem;
+      }
+
+      .menu-recommendation {
+        width: 340px;
+        padding: 1.75rem 1.5rem;
+        border-radius: 18px;
+      }
+
+      .recommendation-icon {
+        width: 60px;
+        height: 60px;
+      }
+
+      .recommendation-title {
+        font-size: 1.3rem;
+      }
+
+      .recommendation-text {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .menu-recommendation {
+        width: 320px;
+        padding: 1.5rem 1.25rem;
+      }
+
+      .recommendation-title {
+        font-size: 1.2rem;
+      }
+
+      .recommendation-text {
+        font-size: 0.9rem;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 1rem 1.25rem;
+        font-size: 0.9rem;
       }
     }
 
@@ -340,6 +658,209 @@
         padding-right: 1rem;
       }
     }
+
+/* Efecto de escritura */
+    .typewriter-container {
+      position: relative;
+      display: inline-block;
+      margin: 2rem 0;
+    }
+
+    .typewriter-text {
+      font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+      font-weight: 300;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #fff;
+      animation: typing 4s steps(40, end), blink-caret 1s step-end infinite;
+    }
+
+    /* Animación de escritura */
+    @keyframes typing {
+      from { 
+        width: 0; 
+      }
+      to { 
+        width: 100%; 
+      }
+    }
+
+    /* Animación del cursor */
+    @keyframes blink-caret {
+      from, to { 
+        border-color: transparent; 
+      }
+      50% { 
+        border-color: #fff; 
+      }
+    }
+
+    /* Efectos adicionales suaves */
+    .typewriter-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+      border-radius: 20px;
+      animation: gentlePulse 4s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { 
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.95);
+      }
+      50% { 
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1.02);
+      }
+    }
+
+    /* Responsive optimizado para móviles */
+    @media (max-width: 1024px) {
+      .typewriter-text {
+        font-size: 2rem;
+        letter-spacing: 0.8px;
+        line-height: 1.2;
+      }
+      
+      .typewriter-text span {
+        margin-top: 0.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .typewriter-text {
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+        line-height: 1.3;
+        padding: 0 1rem;
+      }
+      
+      .typewriter-text span {
+        margin-top: 0.2rem;
+      }
+      
+      .typewriter-container {
+        margin: 1.5rem 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .typewriter-text {
+        font-size: 1.3rem;
+        letter-spacing: 0.3px;
+        line-height: 1.3;
+        padding: 0 0.5rem;
+      }
+      
+      .typewriter-text span {
+        margin-top: 0.15rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .typewriter-text {
+        font-size: 1.1rem;
+        letter-spacing: 0.2px;
+        line-height: 1.3;
+        padding: 0 0.25rem;
+      }
+      
+      .typewriter-text span {
+        margin-top: 0.1rem;
+      }
+      
+      .typewriter-text::after {
+        margin-left: 1px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .typewriter-text {
+        font-size: 1rem;
+        letter-spacing: 0.1px;
+      }
+    }
+
+    /* Efecto fade-in mejorado */
+    .fade-in-container {
+      opacity: 0;
+      animation: smoothFadeIn 1.5s ease-out 0.3s forwards;
+    }
+
+    @keyframes smoothFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Línea decorativa mejorada */
+    .decorative-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      margin: 1rem auto;
+      animation: smoothExpand 1.5s ease-out 3s forwards;
+      transform: scaleX(0);
+    }
+
+    @keyframes smoothExpand {
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    /* Accesibilidad y performance */
+    @media (prefers-reduced-motion: reduce) {
+      .typewriter-text,
+      .typewriter-glow,
+      .decorative-line,
+      .fade-in-container {
+        animation: none !important;
+      }
+      
+      .typewriter-text {
+        opacity: 1;
+        transform: none;
+      }
+      
+      .typewriter-text::after {
+        display: none;
+      }
+      
+      .fade-in-container {
+        opacity: 1;
+      }
+      
+      .decorative-line {
+        transform: scaleX(1);
+      }
+    }
+
+    /* Optimización para touch devices */
+    @media (hover: none) and (pointer: coarse) {
+      .typewriter-text {
+        animation-duration: 2s;
+      }
+      
+      .typewriter-glow {
+        animation-duration: 3s;
+      }
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 min-h-screen">
@@ -352,7 +873,6 @@
       
       <!-- Navegación desktop -->
       <nav class="hidden md:flex space-x-8">
-       
         <a href="" class="nav-link active text-white-300 hover:text-white py-2 transition-colors">Cuenta Regresiva</a>
         <a href="ubicacion.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Ubicación</a>
         <a href="recomendaciones.html" class="nav-link text-white-300 hover:text-white py-2 transition-colors">Recomendaciones</a>
@@ -369,6 +889,28 @@
     </div>
   </header>
 
+  <!-- NUEVO: Overlay y Modal de Recomendación -->
+  <div id="recommendation-overlay" class="recommendation-overlay"></div>
+  
+  <div id="menu-recommendation" class="menu-recommendation">
+    <div class="recommendation-icon">
+      <i class="fas fa-compass text-white text-xl"></i>
+    </div>
+    <h3 class="recommendation-title">¡Explora más opciones!</h3>
+    <p class="recommendation-text">
+      Descubre la ubicación del retiro, recomendaciones especiales y más información útil en nuestro menú.
+    </p>
+    <div class="recommendation-buttons">
+      <button id="show-menu-btn" class="btn-primary">
+        <i class="fas fa-bars"></i>
+        Ver menú
+      </button>
+      <button id="close-recommendation-btn" class="btn-secondary">
+        Ahora no
+      </button>
+    </div>
+  </div>
+
   <!-- Overlay del menú móvil -->
   <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
   
@@ -376,7 +918,6 @@
   <nav id="mobile-menu" class="mobile-menu">
     <div class="pt-20 px-6">
       <div class="space-y-4">
-        
         <div class="mobile-nav-item">
           <a href="" class="flex items-center space-x-3 text-blue-400 py-4 border-b border-gray-700 transition-colors">
             <i class="fas fa-clock text-lg w-6"></i>
@@ -395,9 +936,6 @@
             <span class="text-lg font-medium">Recomendaciones</span>
           </a>
         </div>
-        
-        <!-- Información adicional en menú móvil -->
-       
       </div>
     </div>
   </nav>
@@ -410,17 +948,36 @@
     
     <div class="container mx-auto px-6 text-center relative z-10">
       <!-- Título minimalista -->
-      <div class="mb-16">
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-thin text-white mb-8 tracking-wider">
-          RETIRO COBÁN
-          <span class="block text-3xl md:text-4xl lg:text-5xl font-light text-gray-400 mt-2">2025</span>
-        </h1>
-        <div class="w-24 h-px bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-8"></div>
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
-          "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos"
-        </p>
-        <p class="text-gray-500 text-sm mt-2">Mateo 18:20</p>
+    <div class="text-center max-w-4xl mx-auto">
+    
+    <!-- Título principal (ejemplo) -->
+    <div class="mb-16">
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-thin text-white mb-8 tracking-wider">
+        RETIRO COBÁN
+        <span class="block text-3xl md:text-4xl lg:text-5xl font-light text-gray-400 mt-2">2025</span>
+      </h1>
+      
+      <!-- AQUÍ VA EL NUEVO EFECTO DE ESCRITURA -->
+      <div class="typewriter-container fade-in-container">
+        <div class="typewriter-glow"></div>
+        <h2 class="typewriter-text text-2xl md:text-3xl lg:text-4xl">
+          DIOS NO BUSCA PERFECTOS,
+          <span class="block">BUSCA DISPUESTOS</span>
+        </h2>
+      
       </div>
+      
+      <!-- Línea decorativa -->
+      <div class="decorative-line"></div>
+      
+      <div class="w-24 h-px bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-8"></div>
+      <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+        "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos"
+      </p>
+      <p class="text-gray-500 text-sm mt-2">Mateo 18:20</p>
+    </div>
+    
+  </div>
 
       <!-- Contador innovador -->
       <div class="max-w-4xl mx-auto">
@@ -465,6 +1022,45 @@
       </div>
     </div>
   </main>
+ <footer class="footer">
+    <div class="footer-content">
+      <div class="container mx-auto px-6 py-12">
+        
+        <!-- Divisor superior -->
+        <div class="footer-divider fade-in-up"></div>
+        
+        <!-- Logo y título -->
+        <div class="text-center mb-8 fade-in-up">
+          <div class="flex justify-center mb-4">
+            <img src="src/img/solologo.png" alt="Logo Retiro Cobán" class="footer-logo h-12 w-auto object-contain">
+          </div>
+          <h3 class="text-2xl font-light text-white mb-2 tracking-wider">RETIRO COBÁN 2025</h3>
+          <p class="footer-text">Un encuentro espiritual</p>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="text-center mb-6 fade-in-up">
+          <p class="footer-text mb-2">
+            <i class="fas fa-calendar-alt mr-2"></i>
+            2 de Agosto, 2025 • 6:00 AM
+          </p>
+        </div>
+
+        <!-- Línea separadora -->
+        <div class="footer-bottom">
+          <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6"></div>
+          
+          <!-- Copyright -->
+          <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-6">
+            <p class="footer-bottom-text text-xs md:text-sm">
+              © 2025 Retiro Cobán. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </footer>
 
   <script>
     // Configuración del contador
@@ -472,12 +1068,13 @@
       constructor() {
         this.initializeTimer()
         this.setupMobileMenu()
+        this.setupMenuRecommendation()
         this.startCountdown()
       }
 
       initializeTimer() {
-        // Fecha objetivo: 3 de agosto de 2025 a las 7:00 AM (hora de Guatemala)
-        this.targetDate = new Date('2025-08-03T07:00:00-06:00')
+        // Fecha objetivo: 2 de agosto de 2025 a las 7:00 AM (hora de Guatemala)
+        this.targetDate = new Date('2025-08-02T06:00:00-06:00')
 
         // Elementos del DOM
         this.daysElement = document.getElementById("days")
@@ -518,6 +1115,9 @@
           }
         }
 
+        // Almacenar referencia para uso en recomendación
+        this.toggleMenu = toggleMenu
+
         menuToggle.addEventListener("click", toggleMenu)
         mobileMenuOverlay.addEventListener("click", toggleMenu)
 
@@ -535,6 +1135,73 @@
             toggleMenu()
           }
         })
+      }
+
+      // NUEVA FUNCIÓN: Configurar la recomendación del menú
+      setupMenuRecommendation() {
+        const recommendationOverlay = document.getElementById("recommendation-overlay")
+        const menuRecommendation = document.getElementById("menu-recommendation")
+        const showMenuBtn = document.getElementById("show-menu-btn")
+        const closeRecommendationBtn = document.getElementById("close-recommendation-btn")
+        const hamburger = document.querySelector(".hamburger")
+
+        // Función para mostrar la recomendación
+        const showRecommendation = () => {
+          recommendationOverlay.classList.add("show")
+          menuRecommendation.classList.add("show", "animate-in")
+          
+          // Añadir efecto de pulso al menú hamburguesa
+          hamburger.classList.add("pulse")
+          
+          // Prevenir scroll del body
+          document.body.style.overflow = "hidden"
+        }
+
+        // Función para ocultar la recomendación
+        const hideRecommendation = () => {
+          recommendationOverlay.classList.remove("show")
+          menuRecommendation.classList.remove("show", "animate-in")
+          hamburger.classList.remove("pulse")
+          document.body.style.overflow = ""
+        }
+
+        // Mostrar recomendación después de 10 segundos
+        setTimeout(() => {
+          // Solo mostrar en dispositivos móviles o si no se ha interactuado con el menú
+          const isMobile = window.innerWidth < 768
+          const hasInteracted = localStorage.getItem('menu-recommendation-seen')
+          
+          if (!hasInteracted) {
+            showRecommendation()
+            // Marcar como visto para no molester al usuario en futuras visitas
+            localStorage.setItem('menu-recommendation-seen', 'true')
+          }
+        }, 10000)
+
+        // Event listeners
+        showMenuBtn.addEventListener("click", () => {
+          hideRecommendation()
+          // Abrir el menú móvil automáticamente
+          setTimeout(() => {
+            this.toggleMenu()
+          }, 300)
+        })
+
+        closeRecommendationBtn.addEventListener("click", hideRecommendation)
+        recommendationOverlay.addEventListener("click", hideRecommendation)
+
+        // Cerrar con tecla Escape
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && menuRecommendation.classList.contains("show")) {
+            hideRecommendation()
+          }
+        })
+
+        // Función para resetear la recomendación (útil para testing)
+        window.resetMenuRecommendation = () => {
+          localStorage.removeItem('menu-recommendation-seen')
+          console.log('Recomendación del menú reseteada. Recarga la página para verla nuevamente.')
+        }
       }
 
       calculateTimeRemaining() {
@@ -721,6 +1388,47 @@
         })
       }
     }
+  </script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const typewriterText = document.querySelector('.typewriter-text');
+      
+      // Función mejorada para restart suave
+      function restartAnimation() {
+        typewriterText.style.animation = 'none';
+        typewriterText.offsetHeight; // Trigger reflow
+        typewriterText.style.animation = 'smoothReveal 2.5s ease-out forwards';
+      }
+
+      // Observer optimizado para móviles
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+            restartAnimation();
+          }
+        });
+      }, {
+        threshold: [0.3],
+        rootMargin: '50px'
+      });
+
+      observer.observe(typewriterText);
+
+      // Throttled resize handler
+      let resizeTimeout;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          restartAnimation();
+        }, 300);
+      });
+
+      // Touch optimization
+      if ('ontouchstart' in window) {
+        typewriterText.style.animationDuration = '2s';
+      }
+    });
   </script>
 </body>
 </html>
